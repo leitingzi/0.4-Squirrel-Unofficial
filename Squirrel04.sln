@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squirrel", "squirrel\squirr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqstdlib", "squirrel\sqstdlib\sqstdlib.vcxproj", "{9F28E33B-72BC-4E6A-8937-1FACE98E1DD6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SquirrelPlugin", "SquirrelPlugin\SquirrelPlugin.vcxproj", "{A33EC20A-C603-454E-B401-2DCFA45F6768}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SquirrelPlugin", "SquirrelPlugin.vcxproj", "{A33EC20A-C603-454E-B401-2DCFA45F6768}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
