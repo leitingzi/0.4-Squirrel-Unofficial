@@ -21,7 +21,25 @@
 #include "CCallbackHandler.h"
 #include "CScript.h"
 #include "Main.h"
+
 #define REGISTER_CALLBACK(x) callbacks->x = x
+#define BEGIN_EVENT_CALL(x) \
+	for (CCore::ScriptIterator it = g_pCore->GetScriptsIterator(); it != g_pCore->GetScriptsEnd(); it++) { \
+		CScript * pScript = it->second; \
+		SScriptEvents * pEvents = pScript->E(); \
+		SLListNode<SSquirrelFunction> * eventNode = pEvents->x; \
+		if (eventNode != NULL) { \
+			SLListNode<SSquirrelFunction> current = *eventNode; \
+			do { \
+				Sqrat::Function x = current.data.function;
+
+#define END_EVENT_CALL(x) \
+				if (current.next != NULL) { \
+					current = *(current.next); \
+				} \
+			} while (current.next != NULL); \
+		} \
+	}
 
 void CCallbackHandler::Register(PluginCallbacks * callbacks) {
 	REGISTER_CALLBACK(OnInitServer);
@@ -78,11 +96,11 @@ void CCallbackHandler::Register(PluginCallbacks * callbacks) {
 }
 
 int CCallbackHandler::OnInitServer() {
-	for (CCore::ScriptIterator it = g_pCore->GetScriptsIterator(); it != g_pCore->GetScriptsEnd(); it++) {
-		CScript * pScript = it->second;
-		SScriptEvents * pEvents = pScript->E();
-		
+	BEGIN_EVENT_CALL(onServerStart)
+	{
+		onServerStart();
 	}
+	END_EVENT_CALL(onServerStart);
 
 	return 1;
 }
