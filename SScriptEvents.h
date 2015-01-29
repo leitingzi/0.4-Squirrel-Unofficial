@@ -23,7 +23,7 @@
 #include "SSquirrelFunction.h"
 #include "Main.h"
 
-#define DEFINE_EVENT(x) SLListNode<SSquirrelFunction> x
+#define DEFINE_EVENT(x) SLListNode<SSquirrelFunction> * x = NULL
 
 // This struct consists of a series of SLListNodes to store linked lists of
 // SSquirrelFunctions. This allows scripts to subscribe multiple functions to

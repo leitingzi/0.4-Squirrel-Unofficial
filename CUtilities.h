@@ -25,8 +25,8 @@
 class CUtilities
 {
 	public:
-		template<typename T> static void DestroyLinkedList(SLListNode<T> * pHead) {
-			SLListNode<T> * currentNode = pHead;
+		template<typename T> static void DestroyLinkedList(SLListNode<T> ** pHead) {
+			SLListNode<T> * currentNode = *pHead;
 			SLListNode<T> * nextNode = NULL;
 
 			while (currentNode != NULL) {
@@ -35,5 +35,7 @@ class CUtilities
 
 				currentNode = nextNode;
 			}
+
+			*pHead = NULL;
 		}
 };

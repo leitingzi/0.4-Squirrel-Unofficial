@@ -25,6 +25,7 @@
 #include <unordered_map>
 
 class CScript;
+
 class CCore
 {
 	public:
