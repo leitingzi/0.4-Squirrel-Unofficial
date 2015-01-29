@@ -25,8 +25,6 @@
 #include <unordered_map>
 
 class CScript;
-
-// TODO: Splinter logging functions/printf into a different class
 class CCore
 {
 	public:
