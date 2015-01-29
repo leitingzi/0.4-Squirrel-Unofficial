@@ -19,6 +19,8 @@
 */
 
 #include "CCallbackHandler.h"
+#include "CScript.h"
+#include "Main.h"
 #define REGISTER_CALLBACK(x) callbacks->x = x
 
 void CCallbackHandler::Register(PluginCallbacks * callbacks) {
@@ -76,6 +78,12 @@ void CCallbackHandler::Register(PluginCallbacks * callbacks) {
 }
 
 int CCallbackHandler::OnInitServer() {
+	for (CCore::ScriptIterator it = g_pCore->GetScriptsIterator(); it != g_pCore->GetScriptsEnd(); it++) {
+		CScript * pScript = it->second;
+		SScriptEvents * pEvents = pScript->E();
+		
+	}
+
 	return 1;
 }
 

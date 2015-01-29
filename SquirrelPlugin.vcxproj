@@ -148,6 +148,7 @@
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CScript.h" />
     <ClInclude Include="CSQIO.h" />
+    <ClInclude Include="CUtilities.h" />
     <ClInclude Include="CVMPopulator.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="plugin.h" />

@@ -1,6 +1,6 @@
 /*
    Project: Squirrel Plugin for Vice City Multiplayer (0.4)
-   File: Main.cpp
+   File: CUtilities.h
 
    Copyright (c) 2015 Nelson Gomez (Stormeus)
 
@@ -18,17 +18,22 @@
    THE SOFTWARE.
 */
 
-#include "Main.h"
-#include "CCore.h"
-#include "CConsole.h"
+#pragma once
+#include "SLListNode.h"
+#include "SScriptEvents.h"
 
-CCore * g_pCore;
+class CUtilities
+{
+	public:
+		template<typename T> static void DestroyLinkedList(SLListNode<T> * pHead) {
+			SLListNode<T> * currentNode = pHead;
+			SLListNode<T> * nextNode = NULL;
 
-PLUGIN_INIT VcmpPluginInit(PluginFuncs* functions, PluginCallbacks* callbacks, PluginInfo* info) {
-	g_pCore = new CCore(functions, callbacks, info);
-	if (g_pCore != NULL) {
-		return 1;
-	}
+			while (currentNode != NULL) {
+				nextNode = currentNode->next;
+				delete currentNode;
 
-	return 0;
-}
+				currentNode = nextNode;
+			}
+		}
+};

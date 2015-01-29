@@ -31,6 +31,8 @@ class CScript;
 class CCore
 {
 	public:
+		typedef std::unordered_map<const SQChar *, CScript *>::iterator ScriptIterator;
+
 		CCore(PluginFuncs* functions, PluginCallbacks* callbacks, PluginInfo* info) {
 			m_pSDKFuncs = functions;
 			m_pSDKCalls = callbacks;
@@ -51,6 +53,9 @@ class CCore
 		CScript * GetScript(const SQChar * szScriptName) {
 			return m_pScripts[szScriptName];
 		}
+
+		ScriptIterator GetScriptsIterator() { return m_pScripts.begin(); }
+		ScriptIterator GetScriptsEnd() { return m_pScripts.end(); }
 
 		// Abbreviation for "Get(F)unctions"
 		PluginFuncs * F() { return m_pSDKFuncs; }

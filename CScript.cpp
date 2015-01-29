@@ -20,6 +20,7 @@
 
 #include "CScript.h"
 #include "CConsole.h"
+#include "CUtilities.h"
 
 void CScript::Run() {
 	m_pEvents = new SScriptEvents;
@@ -31,6 +32,7 @@ void CScript::Run() {
 
 	try {
 		m_pRunningScript->CompileFile(m_pszScriptName);
+		m_pRunningScript->Run();
 	}
 	catch (Sqrat::Error e) {
 		CConsole::OutputError("A script execution error was encountered.");
@@ -45,8 +47,7 @@ void CScript::ResetState() {
 	}
 
 	if (m_pEvents) {
-		delete m_pEvents;
-		m_pEvents = NULL;
+		DestroyEvents();
 	}
 
 	if (m_pRunningScript) {
@@ -58,4 +59,66 @@ void CScript::ResetState() {
 void CScript::Reload() {
 	ResetState();
 	Run();
+}
+
+#define DESTROY_EVENT(x) CUtilities::DestroyLinkedList<SSquirrelFunction>(&m_pEvents->x)
+void CScript::DestroyEvents() {
+	DESTROY_EVENT(onServerStart);
+	DESTROY_EVENT(onServerStop);
+
+	DESTROY_EVENT(onScriptLoad);
+	DESTROY_EVENT(onScriptUnload);
+
+	DESTROY_EVENT(onPlayerJoin);
+	DESTROY_EVENT(onPlayerPart);
+	DESTROY_EVENT(onPlayerCrashDump);
+	DESTROY_EVENT(onLoginAttempt);
+
+	DESTROY_EVENT(onPlayerRequestClass);
+	DESTROY_EVENT(onPlayerRequestSpawn);
+	DESTROY_EVENT(onPlayerSpawn);
+
+	DESTROY_EVENT(onPlayerDeath);
+	DESTROY_EVENT(onPlayerKill);
+	DESTROY_EVENT(onPlayerTeamKill);
+
+	DESTROY_EVENT(onPlayerEnteringVehicle);
+	DESTROY_EVENT(onPlayerEnterVehicle);
+	DESTROY_EVENT(onPlayerExitVehicle);
+
+	DESTROY_EVENT(onPlayerChat);
+	DESTROY_EVENT(onPlayerCommand);
+	DESTROY_EVENT(onPlayerPM);
+	DESTROY_EVENT(onPlayerBeginTyping);
+	DESTROY_EVENT(onPlayerEndTyping);
+	DESTROY_EVENT(onPlayerAwayChange);
+
+	DESTROY_EVENT(onPlayerMove);
+	DESTROY_EVENT(onPlayerHealthChange);
+	DESTROY_EVENT(onPlayerArmourChange);
+	DESTROY_EVENT(onPlayerWeaponChange);
+	DESTROY_EVENT(onPlayerActionChange);
+	DESTROY_EVENT(onPlayerStateChange);
+	DESTROY_EVENT(onPlayerOnFireChange);
+	DESTROY_EVENT(onPlayerCrouchChange);
+	DESTROY_EVENT(onPlayerGameKeysChange);
+
+	DESTROY_EVENT(onPickupClaimPicked);
+	DESTROY_EVENT(onPickupPickedUp);
+	DESTROY_EVENT(onPickupRespawn);
+
+	DESTROY_EVENT(onVehicleExplode);
+	DESTROY_EVENT(onVehicleRespawn);
+	DESTROY_EVENT(onVehicleHealthChange);
+	DESTROY_EVENT(onVehicleMove);
+
+	DESTROY_EVENT(onObjectShot);
+	DESTROY_EVENT(onObjectBump);
+
+	DESTROY_EVENT(onKeyDown);
+	DESTROY_EVENT(onKeyUp);
+
+	DESTROY_EVENT(onTimeChange);
+
+	delete m_pEvents;
 }

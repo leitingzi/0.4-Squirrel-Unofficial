@@ -40,6 +40,7 @@ class CScript
 			//delete m_pTimerManager;
 		}
 
+		void DestroyEvents();
 		void Run();
 		void Reload();
 		void ResetState();

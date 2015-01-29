@@ -25,6 +25,12 @@
 
 #define DEFINE_EVENT(x) SLListNode<SSquirrelFunction> x
 
+// This struct consists of a series of SLListNodes to store linked lists of
+// SSquirrelFunctions. This allows scripts to subscribe multiple functions to
+// one callback. However, these linked lists need to be destroyed at some point.
+//
+// Whenever adding an event here, make sure to add it to CScript::DestroyEvents.
+// If you don't, memory leaks WILL occur.
 struct SScriptEvents {
 	DEFINE_EVENT(onServerStart);
 	DEFINE_EVENT(onServerStop);

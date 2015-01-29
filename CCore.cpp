@@ -29,7 +29,7 @@ CCore::~CCore() {
 }
 
 void CCore::DestroyScripts() {
-	for (std::unordered_map<const SQChar *, CScript *>::iterator it = m_pScripts.begin(); it != m_pScripts.end(); it++) {
+	for (ScriptIterator it = m_pScripts.begin(); it != m_pScripts.end(); it++) {
 		delete it->second;
 	}
 }
