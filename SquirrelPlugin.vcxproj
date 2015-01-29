@@ -147,6 +147,7 @@
     <ClInclude Include="CConsole.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CScript.h" />
+    <ClInclude Include="CSQIO.h" />
     <ClInclude Include="CVMPopulator.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="plugin.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="CCallbackHandler.cpp" />
     <ClCompile Include="CConsole.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CSQIO.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>

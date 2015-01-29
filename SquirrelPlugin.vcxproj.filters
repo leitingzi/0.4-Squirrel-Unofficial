@@ -45,6 +45,9 @@
     <ClInclude Include="CConsole.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CSQIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -57,6 +60,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CCallbackHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSQIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

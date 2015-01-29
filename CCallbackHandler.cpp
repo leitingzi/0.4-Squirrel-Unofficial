@@ -21,8 +21,7 @@
 #include "CCallbackHandler.h"
 #define REGISTER_CALLBACK(x) callbacks->x = x
 
-void CCallbackHandler::Register(PluginCallbacks * callbacks)
-{
+void CCallbackHandler::Register(PluginCallbacks * callbacks) {
 	REGISTER_CALLBACK(OnInitServer);
 	REGISTER_CALLBACK(OnShutdownServer);
 	REGISTER_CALLBACK(OnFrame);

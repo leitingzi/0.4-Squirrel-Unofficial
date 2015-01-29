@@ -35,7 +35,6 @@ class CCore
 			m_pSDKFuncs = functions;
 			m_pSDKCalls = callbacks;
 			m_pSDKInfo = info;
-			m_pLogFile = fopen("server_log.txt", "a");
 
 			CCallbackHandler::Register(callbacks);
 			ParseConfig();
@@ -44,19 +43,14 @@ class CCore
 		~CCore();
 		
 		bool CanReload() { return this->m_bCanReload; }
+		void DestroyScripts();
 		void DestroyWorld();
 		void ParseConfig();
 		void Tick();
 
-		FILE * GetLogInstance() { return m_pLogFile; }
 		CScript * GetScript(const SQChar * szScriptName) {
 			return m_pScripts[szScriptName];
 		}
-
-		static void printfunc(HSQUIRRELVM v, const SQChar *s, ...);
-		static void errorfunc(HSQUIRRELVM v, const SQChar *s, ...);
-		void rawprint(const char * pszOutput);
-		void printf(const char * pszFormat, ...);
 
 		// Abbreviation for "Get(F)unctions"
 		PluginFuncs * F() { return m_pSDKFuncs; }
@@ -72,7 +66,6 @@ class CCore
 		CScript * SpawnScript(const SQChar * szScriptName);
 
 		std::unordered_map<const SQChar *, CScript *> m_pScripts;
-		FILE * m_pLogFile;
 		bool m_bCanReload;
 
 		PluginFuncs * m_pSDKFuncs;

@@ -21,6 +21,19 @@
 #include "CCore.h"
 #include "CConsole.h"
 #include "CScript.h"
+#include "CSQIO.h"
+
+CCore::~CCore() {
+	CSQIO::shutdown();
+	this->DestroyScripts();
+}
+
+void CCore::DestroyScripts() {
+	for (std::unordered_map<const SQChar *, CScript *>::iterator it = m_pScripts.begin(); it != m_pScripts.end(); it++)
+	{
+		delete it->second;
+	}
+}
 
 void CCore::ParseConfig() {
 	m_bCanReload = false;
@@ -103,35 +116,4 @@ bool CCore::ParseConfigLine(const char * szLine) {
 CScript * CCore::SpawnScript(const char * szScriptName) {
 	CScript * pScript = new CScript(szScriptName);
 	return pScript;
-}
-
-void CCore::printf(const char * pszFormat, ...)
-{
-	char szInitBuffer[512];
-	va_list va;
-
-	va_start(va, pszFormat);
-	{
-		int nChars = vsnprintf(szInitBuffer, sizeof(szInitBuffer), pszFormat, va);
-		if (nChars > sizeof(szInitBuffer) - 1)
-		{
-			char * szBuffer = new char[nChars + 1];
-			if (szBuffer != NULL) {
-				vsnprintf(szBuffer, nChars, pszFormat, va);
-				this->rawprint(szBuffer);
-
-				delete[] szBuffer;
-			}
-		}
-		else
-			this->rawprint(szInitBuffer);
-	}
-	va_end(va);
-}
-
-void CCore::rawprint(const char * pszOutput)
-{
-	fputs(pszOutput, stdout);
-	if (this->m_pLogFile != NULL)
-		fprintf(this->m_pLogFile, "%s", pszOutput);
 }

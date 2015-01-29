@@ -1,6 +1,6 @@
 /*
    Project: Squirrel Plugin for Vice City Multiplayer (0.4)
-   File: CScript.h
+   File: CSQIO.h
 
    Copyright (c) 2015 Nelson Gomez (Stormeus)
 
@@ -19,41 +19,19 @@
 */
 
 #pragma once
-#include "CSQIO.h"
-#include "CVMPopulator.h"
-#include "Main.h"
-#include "SScriptEvents.h"
+#include <stdio.h>
+#include <squirrel.h>
 
-class CScript
+class CSQIO
 {
 	public:
-		CScript(const SQChar * szScriptName) {
-			m_pEvents = new SScriptEvents;
-			m_pVM = sq_open(256);
-
-			sq_setprintfunc(m_pVM, CSQIO::printfunc, CSQIO::errorfunc);
-			CVMPopulator::Populate(m_pVM);
-		}
-
-		~CScript() {
-			delete m_pEvents;
-			delete m_pRunningScript;
-			//delete m_pTimerManager;
-
-			sq_close(m_pVM);
-		}
-
-		// Abbreviation for "Get(V)M"
-		HSQUIRRELVM V() { return m_pVM; }
-
-		// Abbreviation for "Get(E)vents"
-		SScriptEvents * E() { return m_pEvents; }
+		static void rawprint(const char * pszOutput);
+		static void printf(const char * pszFormat, ...);
+		static void printfunc(HSQUIRRELVM v, const SQChar *s, ...);
+		static void errorfunc(HSQUIRRELVM v, const SQChar *s, ...);
+		static void shutdown();
 
 	private:
-		SScriptEvents * m_pEvents;
-		HSQUIRRELVM m_pVM;
-		//CTimerManager * m_pTimerManager;
-
-		// Sqrat's copy of the running script
-		Script * m_pRunningScript;
+		static FILE * m_pLogFile;
+		static bool m_bTriedLogging;
 };
