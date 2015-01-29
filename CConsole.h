@@ -30,7 +30,6 @@
 class CConsole
 {
 	public:
-		static void DoWindowsOutput(const char * msg, uint32_t dwColorFlags);
 		static void OutputScriptInfo(const char * msg);
 		static void OutputDebug(const char * msg);
 		static void OutputMessage(const char * msg);

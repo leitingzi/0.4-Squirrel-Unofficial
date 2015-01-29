@@ -22,26 +22,9 @@
 #include "CSQIO.h"
 #include "Main.h"
 
-void CConsole::DoWindowsOutput(const char * msg, uint32_t dwColorFlags) {
-	#ifdef WIN32
-		HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-		CONSOLE_SCREEN_BUFFER_INFO csbBefore;
-		GetConsoleScreenBufferInfo(hstdout, &csbBefore);
-		SetConsoleTextAttribute(hstdout, dwColorFlags);
-		CSQIO::rawprint("[SCRIPT]  ");
-
-		SetConsoleTextAttribute(hstdout, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
-		CSQIO::rawprint(msg);
-
-		SetConsoleTextAttribute(hstdout, csbBefore.wAttributes);
-		CSQIO::rawprint("\n");
-	#endif
-}
-
 void CConsole::OutputScriptInfo( const char * msg ) {
 	#ifdef WIN32
-		CConsole::DoWindowsOutput(msg, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		CSQIO::DoWindowsOutput(msg, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	#else
 		CSQIO::printf( "%c[0;36m[SCRIPT]%c[0;37m %s\n", 27, 27, msg );
 	#endif
@@ -55,7 +38,7 @@ void CConsole::OutputDebug( const char * msg ) {
 
 void CConsole::OutputMessage( const char * msg ) {
 	#ifdef WIN32
-		CConsole::DoWindowsOutput(msg, FOREGROUND_GREEN);
+		CSQIO::DoWindowsOutput(msg, FOREGROUND_GREEN);
 	#else
 		CSQIO::printf( "%c[0;32m[MODULE]%c[0;37m %s\n", 27, 27, msg );
 	#endif
@@ -63,7 +46,7 @@ void CConsole::OutputMessage( const char * msg ) {
 
 void CConsole::OutputWarning( const char * msg ) {
 	#ifdef WIN32
-		CConsole::DoWindowsOutput(msg, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
+		CSQIO::DoWindowsOutput(msg, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
 	#else
 		CSQIO::printf( "%c[0;30m[WARNING]%c[0;37m %s\n", 27, 27, msg );
 	#endif
@@ -72,7 +55,7 @@ void CConsole::OutputWarning( const char * msg ) {
 void CConsole::OutputError( const char * msg )
 {
 	#ifdef WIN32
-		DoWindowsOutput(msg, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		CSQIO::DoWindowsOutput(msg, FOREGROUND_RED | FOREGROUND_INTENSITY);
 	#else
 		CSQIO::printf( "%c[0;30m[ERROR]%c[0;37m %s\n", 27, 27, msg );
 	#endif

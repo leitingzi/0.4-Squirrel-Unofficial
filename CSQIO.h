@@ -21,6 +21,7 @@
 #pragma once
 #include <stdio.h>
 #include <squirrel.h>
+#include <stdint.h>
 
 class CSQIO
 {
@@ -30,6 +31,7 @@ class CSQIO
 		static void printfunc(HSQUIRRELVM v, const SQChar *s, ...);
 		static void errorfunc(HSQUIRRELVM v, const SQChar *s, ...);
 		static void shutdown();
+		static void DoWindowsOutput(const char * pszMsg, uint32_t dwColorFlags);
 
 	private:
 		static FILE * m_pLogFile;

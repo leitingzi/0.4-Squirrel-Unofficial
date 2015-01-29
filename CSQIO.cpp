@@ -64,8 +64,7 @@ void CSQIO::shutdown() {
 		fclose(m_pLogFile);
 }
 
-void CSQIO::printfunc(HSQUIRRELVM v, const SQChar *s, ...)
-{
+void CSQIO::printfunc(HSQUIRRELVM v, const SQChar *s, ...) {
 	va_list arglist;
 	char szInitBuffer[512];
 
@@ -94,8 +93,7 @@ void CSQIO::printfunc(HSQUIRRELVM v, const SQChar *s, ...)
 	va_end(arglist);
 }
 
-void CSQIO::errorfunc(HSQUIRRELVM v, const SQChar *s, ...)
-{
+void CSQIO::errorfunc(HSQUIRRELVM v, const SQChar *s, ...) {
 	va_list arglist;
 	char szInitBuffer[512];
 
@@ -122,4 +120,21 @@ void CSQIO::errorfunc(HSQUIRRELVM v, const SQChar *s, ...)
 			rawprint(szInitBuffer);
 	}
 	va_end(arglist);
+}
+
+void CSQIO::DoWindowsOutput(const char * pszMsg, uint32_t dwColorFlags) {
+	#ifdef WIN32
+		HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+		CONSOLE_SCREEN_BUFFER_INFO csbBefore;
+		GetConsoleScreenBufferInfo(hstdout, &csbBefore);
+		SetConsoleTextAttribute(hstdout, dwColorFlags);
+		CSQIO::rawprint("[SCRIPT]  ");
+
+		SetConsoleTextAttribute(hstdout, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
+		CSQIO::rawprint(pszMsg);
+
+		SetConsoleTextAttribute(hstdout, csbBefore.wAttributes);
+		CSQIO::rawprint("\n");
+	#endif
 }
