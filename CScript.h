@@ -34,9 +34,10 @@ class CScript
 
 		~CScript() {
 			delete m_pEvents;
-			delete m_pVM;
 			delete m_pRunningScript;
 			//delete m_pTimerManager;
+
+			sq_close(m_pVM);
 		}
 
 		// Abbreviation for "Get(V)M"
