@@ -22,10 +22,12 @@
 #include "CCore.h"
 
 CCore * g_pCore;
+
 PLUGIN_INIT VcmpPluginInit(PluginFuncs* functions, PluginCallbacks* callbacks, PluginInfo* info) {
 	g_pCore = new CCore(functions, callbacks, info);
-	if (g_pCore != NULL)
+	if (g_pCore != NULL) {
 		return 1;
+	}
 
 	return 0;
 }

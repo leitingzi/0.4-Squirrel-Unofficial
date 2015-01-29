@@ -29,8 +29,7 @@ CCore::~CCore() {
 }
 
 void CCore::DestroyScripts() {
-	for (std::unordered_map<const SQChar *, CScript *>::iterator it = m_pScripts.begin(); it != m_pScripts.end(); it++)
-	{
+	for (std::unordered_map<const SQChar *, CScript *>::iterator it = m_pScripts.begin(); it != m_pScripts.end(); it++) {
 		delete it->second;
 	}
 }
@@ -39,10 +38,10 @@ void CCore::ParseConfig() {
 	m_bCanReload = false;
 
 	FILE * pConfig = fopen("server.cfg", "r");
-	if (pConfig == NULL)
+	if (pConfig == NULL) {
 		CConsole::OutputError("0.4-squirrel could not read server.cfg");
-	else
-	{
+	}
+	else {
 		const int lineSize = 128;
 		const int bufferSize = sizeof(char) * lineSize;
 		char * lineBuffer = (char *)malloc(bufferSize);
@@ -55,18 +54,15 @@ void CCore::ParseConfig() {
 			memset(lineBuffer, 0, bufferSize);
 			char ch = getc(pConfig);
 
-			while (ch != EOF)
-			{
-				if (ch == '\n')
-				{
+			while (ch != EOF) {
+				if (ch == '\n') {
 					// End of the line. Parse it.
 					this->ParseConfigLine(lineBuffer);
 
 					memset(lineBuffer, 0, bufferSize);
 					elapsedLineSize = 0;
 				}
-				else
-				{
+				else {
 					lineBuffer[elapsedLineSize++] = ch;
 
 					// If we've hit our limit on line size, stop reading the line.
@@ -76,8 +72,9 @@ void CCore::ParseConfig() {
 						this->ParseConfigLine(lineBuffer);
 
 						// Go straight to the next one instead.
-						while (ch != '\n')
+						while (ch != '\n') {
 							ch = getc(pConfig);
+						}
 
 						memset(lineBuffer, 0, bufferSize);
 						elapsedLineSize = 0;
@@ -99,12 +96,13 @@ void CCore::ParseConfig() {
 
 bool CCore::ParseConfigLine(const char * szLine) {
 	const char * gamemodeSearch = NULL;
-	if ((gamemodeSearch = strstr(szLine, "sqgamemode ")) == NULL)
+	if ((gamemodeSearch = strstr(szLine, "sqgamemode ")) == NULL) {
 		return false;
-	else if (strlen(gamemodeSearch) < 1)
+	}
+	else if (strlen(gamemodeSearch) < 1) {
 		return false;
-	else
-	{
+	}
+	else {
 		gamemodeSearch += sizeof("sqgamemode");
 		CScript * pScript = this->SpawnScript(gamemodeSearch);
 
