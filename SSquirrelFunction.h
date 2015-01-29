@@ -19,7 +19,7 @@
 */
 
 #pragma once
-#include "Main.h"
+#include <sqrat.h>
 
 struct SSquirrelFunction {
 	const SQChar * szName;

@@ -18,6 +18,7 @@
    THE SOFTWARE.
 */
 
+#pragma once
 #include "SLListNode.h"
 #include "SSquirrelFunction.h"
 #include "Main.h"
