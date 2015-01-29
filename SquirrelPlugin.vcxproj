@@ -139,14 +139,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CCallbackHandler.h" />
+    <ClInclude Include="CConsole.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CScript.h" />
+    <ClInclude Include="CVMPopulator.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="plugin.h" />
     <ClInclude Include="SScriptEvents.h" />
     <ClInclude Include="SLListNode.h" />
+    <ClInclude Include="SSquirrelFunction.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCallbackHandler.cpp" />
+    <ClCompile Include="CConsole.cpp" />
+    <ClCompile Include="CCore.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>

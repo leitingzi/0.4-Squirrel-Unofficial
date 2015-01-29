@@ -33,9 +33,30 @@
     <ClInclude Include="SScriptEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SSquirrelFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CVMPopulator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CCallbackHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CConsole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CConsole.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CCallbackHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

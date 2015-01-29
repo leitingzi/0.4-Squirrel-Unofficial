@@ -1,6 +1,6 @@
 /*
    Project: Squirrel Plugin for Vice City Multiplayer (0.4)
-   File: CScript.h
+   File: SSquirrelFunction.h
 
    Copyright (c) 2015 Nelson Gomez (Stormeus)
 
@@ -20,36 +20,8 @@
 
 #pragma once
 #include "Main.h"
-#include "SScriptEvents.h"
 
-class CScript
-{
-	public:
-		CScript(const SQChar * szScriptName) {
-			m_pEvents = new SScriptEvents;
-			m_pVM = sq_open(256);
-
-			sq_setprintfunc(m_pVM, CCore::printfunc, CCore::errorfunc);
-		}
-
-		~CScript() {
-			delete m_pEvents;
-			delete m_pVM;
-			delete m_pRunningScript;
-			//delete m_pTimerManager;
-		}
-
-		// Abbreviation for "Get(V)M"
-		HSQUIRRELVM V() { return m_pVM; }
-
-		// Abbreviation for "Get(E)vents"
-		SScriptEvents * E() { return m_pEvents; }
-
-	private:
-		SScriptEvents * m_pEvents;
-		HSQUIRRELVM m_pVM;
-		//CTimerManager * m_pTimerManager;
-
-		// Sqrat's copy of the running script
-		Script * m_pRunningScript;
+struct SSquirrelFunction {
+	const SQChar * szName;
+	Sqrat::Function function;
 };

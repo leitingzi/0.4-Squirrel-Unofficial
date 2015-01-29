@@ -1,6 +1,6 @@
 /*
    Project: Squirrel Plugin for Vice City Multiplayer (0.4)
-   File: CScript.h
+   File: CConsole.h
 
    Copyright (c) 2015 Nelson Gomez (Stormeus)
 
@@ -19,37 +19,21 @@
 */
 
 #pragma once
-#include "Main.h"
-#include "SScriptEvents.h"
+#ifdef WIN32
+	#include <Windows.h>
+#endif
 
-class CScript
+#include <iostream>
+#include <stdio.h>
+#include <stdint.h>
+
+class CConsole
 {
 	public:
-		CScript(const SQChar * szScriptName) {
-			m_pEvents = new SScriptEvents;
-			m_pVM = sq_open(256);
-
-			sq_setprintfunc(m_pVM, CCore::printfunc, CCore::errorfunc);
-		}
-
-		~CScript() {
-			delete m_pEvents;
-			delete m_pVM;
-			delete m_pRunningScript;
-			//delete m_pTimerManager;
-		}
-
-		// Abbreviation for "Get(V)M"
-		HSQUIRRELVM V() { return m_pVM; }
-
-		// Abbreviation for "Get(E)vents"
-		SScriptEvents * E() { return m_pEvents; }
-
-	private:
-		SScriptEvents * m_pEvents;
-		HSQUIRRELVM m_pVM;
-		//CTimerManager * m_pTimerManager;
-
-		// Sqrat's copy of the running script
-		Script * m_pRunningScript;
+		static void DoWindowsOutput(const char * msg, uint32_t dwColorFlags);
+		static void OutputScriptInfo(const char * msg);
+		static void OutputDebug(const char * msg);
+		static void OutputMessage(const char * msg);
+		static void OutputWarning(const char * msg);
+		static void OutputError(const char * msg);
 };

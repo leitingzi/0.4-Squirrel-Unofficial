@@ -19,12 +19,15 @@
 */
 
 #pragma once
+#include "CCallbackHandler.h"
 #include "plugin.h"
+#include <squirrel.h>
 #include <unordered_map>
 
 #define MAX_SCRIPTS 32
 class CScript;
 
+// TODO: Splinter logging functions/printf into a different class
 class CCore
 {
 	public:
@@ -32,10 +35,28 @@ class CCore
 			m_pSDKFuncs = functions;
 			m_pSDKCalls = callbacks;
 			m_pSDKInfo = info;
+			m_pLogFile = fopen("server_log.txt", "a");
+
+			CCallbackHandler::Register(callbacks);
+			ParseConfig();
 		}
 
 		~CCore();
+		
+		bool CanReload() { return this->m_bCanReload; }
+		void DestroyWorld();
+		void ParseConfig();
+		void Tick();
 
+		FILE * GetLogInstance() { return m_pLogFile; }
+		CScript * GetScript(const SQChar * szScriptName) {
+			return m_pScripts[szScriptName];
+		}
+
+		static void printfunc(HSQUIRRELVM v, const SQChar *s, ...);
+		static void errorfunc(HSQUIRRELVM v, const SQChar *s, ...);
+		void rawprint(const char * pszOutput);
+		void printf(const char * pszFormat, ...);
 
 		// Abbreviation for "Get(F)unctions"
 		PluginFuncs * F() { return m_pSDKFuncs; }
@@ -47,7 +68,12 @@ class CCore
 		PluginInfo * I() { return m_pSDKInfo; }
 
 	private:
-		std::unordered_map<const char *, CScript *> m_pScripts;
+		bool ParseConfigLine(const char * szLine);
+		CScript * SpawnScript(const SQChar * szScriptName);
+
+		std::unordered_map<const SQChar *, CScript *> m_pScripts;
+		FILE * m_pLogFile;
+		bool m_bCanReload;
 
 		PluginFuncs * m_pSDKFuncs;
 		PluginCallbacks * m_pSDKCalls;

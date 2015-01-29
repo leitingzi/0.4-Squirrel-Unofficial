@@ -19,8 +19,10 @@
 */
 
 #include "SLListNode.h"
+#include "SSquirrelFunction.h"
 #include "Main.h"
-#define DEFINE_EVENT(x) SLListNode<Sqrat::Function *> x
+
+#define DEFINE_EVENT(x) SLListNode<SSquirrelFunction> x
 
 struct SScriptEvents {
 	DEFINE_EVENT(onServerStart);
