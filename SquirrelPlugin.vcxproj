@@ -159,6 +159,7 @@
     <ClCompile Include="CCallbackHandler.cpp" />
     <ClCompile Include="CConsole.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CScript.cpp" />
     <ClCompile Include="CSQIO.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>

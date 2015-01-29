@@ -27,21 +27,22 @@
 class CScript
 {
 	public:
-		CScript(const SQChar * szScriptName) {
-			m_pEvents = new SScriptEvents;
-			m_pVM = sq_open(256);
+		CScript(const SQChar * pszScriptName) {
+			m_pEvents = NULL;
+			m_pVM = NULL;
+			m_pszScriptName = pszScriptName;
 
-			sq_setprintfunc(m_pVM, CSQIO::printfunc, CSQIO::errorfunc);
-			CVMPopulator::Populate(m_pVM);
+			Run();
 		}
 
 		~CScript() {
-			delete m_pEvents;
-			delete m_pRunningScript;
+			ResetState();
 			//delete m_pTimerManager;
-
-			sq_close(m_pVM);
 		}
+
+		void Run();
+		void Reload();
+		void ResetState();
 
 		// Abbreviation for "Get(V)M"
 		HSQUIRRELVM V() { return m_pVM; }
@@ -52,6 +53,7 @@ class CScript
 	private:
 		SScriptEvents * m_pEvents;
 		HSQUIRRELVM m_pVM;
+		const SQChar * m_pszScriptName;
 		//CTimerManager * m_pTimerManager;
 
 		// Sqrat's copy of the running script
