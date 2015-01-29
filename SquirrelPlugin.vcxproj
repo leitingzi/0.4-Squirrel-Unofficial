@@ -161,6 +161,7 @@
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CScript.cpp" />
     <ClCompile Include="CSQIO.cpp" />
+    <ClCompile Include="CVMPopulator.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
