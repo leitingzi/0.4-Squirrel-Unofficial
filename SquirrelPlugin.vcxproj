@@ -152,16 +152,36 @@
     <ClInclude Include="CCallbackHandler.h" />
     <ClInclude Include="CConsole.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="classes\CEntity.h" />
+    <ClInclude Include="classes\CObject.h" />
+    <ClInclude Include="classes\CPickup.h" />
+    <ClInclude Include="classes\CPlayer.h" />
+    <ClInclude Include="classes\CTextdraw.h" />
+    <ClInclude Include="classes\CTimer.h" />
+    <ClInclude Include="classes\CVehicle.h" />
     <ClInclude Include="CScript.h" />
     <ClInclude Include="CScriptEvents.h" />
     <ClInclude Include="CSQIO.h" />
     <ClInclude Include="CUtilities.h" />
     <ClInclude Include="CVMPopulator.h" />
+    <ClInclude Include="functions\CEntityFunctions.h" />
+    <ClInclude Include="functions\CMiscFunctions.h" />
+    <ClInclude Include="functions\CRuleFunctions.h" />
+    <ClInclude Include="functions\CServerFunctions.h" />
+    <ClInclude Include="functions\CWorldFunctions.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="plugin.h" />
     <ClInclude Include="SScriptEvents.h" />
     <ClInclude Include="SLListNode.h" />
     <ClInclude Include="SSquirrelFunction.h" />
+    <ClInclude Include="structures\CARGB.h" />
+    <ClInclude Include="structures\CBounds.h" />
+    <ClInclude Include="structures\CEntityProperty.h" />
+    <ClInclude Include="structures\CQuaternion.h" />
+    <ClInclude Include="structures\CRGB.h" />
+    <ClInclude Include="structures\CRGBA.h" />
+    <ClInclude Include="structures\CVector.h" />
+    <ClInclude Include="structures\CWastedSettings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCallbackHandler.cpp" />

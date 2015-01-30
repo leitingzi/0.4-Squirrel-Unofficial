@@ -5,7 +5,7 @@
    Copyright (c) 2015 Nelson Gomez (Stormeus)
 
    Licensed under the MIT License. A copy of the License is available in
-   LICENSE.txt or at:
+   LICENSE or at:
 
        http://opensource.org/licenses/MIT
 
