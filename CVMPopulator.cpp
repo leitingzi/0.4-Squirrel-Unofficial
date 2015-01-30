@@ -21,6 +21,13 @@
 #include "CVMPopulator.h"
 #include <sqrat.h>
 
+#include "functions/CCompatFunctions.h"
+#include "functions/CEntityFunctions.h"
+#include "functions/CMiscFunctions.h"
+#include "functions/CRuleFunctions.h"
+#include "functions/CServerFunctions.h"
+#include "functions/CWorldFunctions.h"
+
 void CVMPopulator::Populate(HSQUIRRELVM v) {
 	RegisterFunctions(v);
 	RegisterClasses(v);
@@ -28,7 +35,12 @@ void CVMPopulator::Populate(HSQUIRRELVM v) {
 }
 
 void CVMPopulator::RegisterFunctions(HSQUIRRELVM v) {
-
+	CCompatFunctions::Register(v);
+	CEntityFunctions::Register(v);
+	CMiscFunctions::Register(v);
+	CRuleFunctions::Register(v);
+	CServerFunctions::Register(v);
+	CWorldFunctions::Register(v);
 }
 
 void CVMPopulator::RegisterClasses(HSQUIRRELVM v) {
