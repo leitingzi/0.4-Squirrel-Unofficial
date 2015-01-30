@@ -27,9 +27,9 @@ class CMiscFunctions
 		static void Register(HSQUIRRELVM v);
 
 		static int CreateRadioStream(const SQChar * pszRadioName, const SQChar * pszRadioURL, bool bCanSelect);
-		static void DestroyRadioStream(int nRadioID);
+		static void DestroyRadioStream(int nRadioId);
 
-		static int BindKey(bool bIsOnKeyDown, int nKey1, int nKey2 = 0, int nKey3 = 0);
+		static int BindKey(bool bIsOnKeyUp, int nKey1, int nKey2 = 0, int nKey3 = 0);
 		static bool RemoveKeybind(int nBindId);
 		static void RemoveAllKeybinds(void);
 
@@ -42,6 +42,9 @@ class CMiscFunctions
 
 		static float DistanceFromPoint(float fX1, float fY1, float fX2, float fY2);
 		static SQInteger ReloadScripts(HSQUIRRELVM v);
+		static SQInteger AddEvent(HSQUIRRELVM v);
+		static SQInteger RemoveEvent(HSQUIRRELVM v);
+		// static SQInteger NewTimer(HSQUIRRELVM v);
 
 		static int GetVehicleModelFromName(SQChar * pszName);
 		static const SQChar * GetVehicleNameFromModel(int nModel);

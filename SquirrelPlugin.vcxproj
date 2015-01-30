@@ -193,6 +193,12 @@
     <ClCompile Include="CScriptEvents.cpp" />
     <ClCompile Include="CSQIO.cpp" />
     <ClCompile Include="CVMPopulator.cpp" />
+    <ClCompile Include="functions\CCompatFunctions.cpp" />
+    <ClCompile Include="functions\CEntityFunctions.cpp" />
+    <ClCompile Include="functions\CMiscFunctions.cpp" />
+    <ClCompile Include="functions\CRuleFunctions.cpp" />
+    <ClCompile Include="functions\CServerFunctions.cpp" />
+    <ClCompile Include="functions\CWorldFunctions.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
