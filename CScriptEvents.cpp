@@ -19,19 +19,57 @@
 */
 #include "CScriptEvents.h"
 
-EVENTCALL_IMPL(onServerStart) { f(); return 1; }
-EVENTCALL_IMPL(onServerStop) { f(); return 1; }
+inline bool EvaluateEventResult(Sqrat::SharedPtr<int> pnResult) {
+	if (!pnResult) {
+		return 1;
+	}
 
-EVENTCALL_IMPL(onScriptLoad) { f(); return 1; }
-EVENTCALL_IMPL(onScriptUnload) { f(); return 1; }
+	return *pnResult;
+}
 
-EVENTCALL_IMPL(onPlayerJoin) { return 1; }
-EVENTCALL_IMPL(onPlayerPart) { return 1; }
-EVENTCALL_IMPL(onPlayerCrashDump) { return 1; }
-EVENTCALL_IMPL(onLoginAttempt) { return 1; }
+EVENTCALL_IMPL(onServerStart) {
+	Sqrat::SharedPtr<int> pnResult = f.Evaluate<int>();
+	return EvaluateEventResult(pnResult);
+}
 
-EVENTCALL_IMPL(onPlayerRequestClass) { return 1; }
-EVENTCALL_IMPL(onPlayerRequestSpawn) { return 1; }
+EVENTCALL_IMPL(onServerStop) {
+	Sqrat::SharedPtr<int> pnResult = f.Evaluate<int>();
+	return EvaluateEventResult(pnResult);
+}
+
+EVENTCALL_IMPL(onScriptLoad) {
+	Sqrat::SharedPtr<int> pnResult = f.Evaluate<int>();
+	return EvaluateEventResult(pnResult);
+}
+
+EVENTCALL_IMPL(onScriptUnload) {
+	Sqrat::SharedPtr<int> pnResult = f.Evaluate<int>();
+	return EvaluateEventResult(pnResult);
+}
+
+EVENTCALL_IMPL(onPlayerJoin) {
+	return 1;
+}
+
+EVENTCALL_IMPL(onPlayerPart) {
+	return 1;
+}
+
+EVENTCALL_IMPL(onPlayerCrashDump) {
+	return 1;
+}
+EVENTCALL_IMPL(onLoginAttempt) {
+	return 1;
+}
+
+EVENTCALL_IMPL(onPlayerRequestClass) {
+	return 1;
+}
+
+EVENTCALL_IMPL(onPlayerRequestSpawn) {
+	return 1;
+}
+
 EVENTCALL_IMPL(onPlayerSpawn) { return 1; }
 
 EVENTCALL_IMPL(onPlayerDeath) { return 1; }
