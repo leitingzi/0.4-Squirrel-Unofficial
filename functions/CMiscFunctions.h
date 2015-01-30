@@ -24,6 +24,8 @@
 class CMiscFunctions
 {
 	public:
+		static void Register(HSQUIRRELVM v);
+
 		static int CreateRadioStream(const SQChar * pszRadioName, const SQChar * pszRadioURL, bool bCanSelect);
 		static void DestroyRadioStream(int nRadioID);
 

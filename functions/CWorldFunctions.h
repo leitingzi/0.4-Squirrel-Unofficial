@@ -19,6 +19,8 @@
 */
 
 #pragma once
+#include <squirrel.h>
+
 class CBounds;
 class CPlayer;
 class CRGB;
@@ -28,6 +30,8 @@ class CWastedSettings;
 class CWorldFunctions
 {
 	public:
+		static void Register(HSQUIRRELVM v);
+
 		static void SetTimeRate(unsigned int nTimeRate);
 		static void SetHour(int nHour);
 		static void SetMinute(int nMinute);

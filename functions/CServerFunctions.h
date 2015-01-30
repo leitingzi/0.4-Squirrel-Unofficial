@@ -26,6 +26,8 @@ class CVector;
 class CServerFunctions
 {
 	public:
+		static void Register(HSQUIRRELVM v);
+
 		static void ClientMessage(const SQChar * pszMessage, CPlayer * pPlayer, int r, int g, int b);
 		static void ClientMessageWithAlpha(const SQChar * pszMessage, CPlayer * pPlayer, int r, int g, int b, int a);
 

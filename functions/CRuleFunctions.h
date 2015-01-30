@@ -19,9 +19,13 @@
 */
 
 #pragma once
+#include <squirrel.h>
+
 class CRuleFunctions
 {
 	public:
+		static void Register(HSQUIRRELVM v);
+
 		static void SetSyncFrameLimiter(bool bToggle);
 		static void SetFrameLimiter(bool bToggle);
 		static void SetTaxiBoostJump(bool bToggle);

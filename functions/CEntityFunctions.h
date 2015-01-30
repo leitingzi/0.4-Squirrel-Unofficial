@@ -33,6 +33,8 @@ class CVehicle;
 class CEntityFunctions
 {
 	public:
+		static void Register(HSQUIRRELVM v);
+
 		static int GetPlayerIDFromName(const SQChar * pszName);
 		static bool IsWorldCompatibleWithPlayer(CPlayer * pPlayer, int nWorld);
 
