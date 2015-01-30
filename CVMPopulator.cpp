@@ -25,7 +25,6 @@ void CVMPopulator::Populate(HSQUIRRELVM v) {
 	RegisterFunctions(v);
 	RegisterClasses(v);
 	RegisterConstants(v);
-	RegisterStructs(v);
 }
 
 void CVMPopulator::RegisterFunctions(HSQUIRRELVM v) {
@@ -33,10 +32,6 @@ void CVMPopulator::RegisterFunctions(HSQUIRRELVM v) {
 }
 
 void CVMPopulator::RegisterClasses(HSQUIRRELVM v) {
-
-}
-
-void CVMPopulator::RegisterStructs(HSQUIRRELVM v) {
 
 }
 

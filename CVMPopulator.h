@@ -28,5 +28,4 @@ class CVMPopulator
 		static void RegisterFunctions(HSQUIRRELVM v);
 		static void RegisterClasses(HSQUIRRELVM v);
 		static void RegisterConstants(HSQUIRRELVM v);
-		static void RegisterStructs(HSQUIRRELVM v);
 };
