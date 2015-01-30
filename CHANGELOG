@@ -1,17 +1,33 @@
 v4.0.0
     New features
       - Ability to run multiple scripts on the same server.
-      - New interface for events that allows multiple functions to subscribe
-        to one event.
+      - New interface for events that allows multiple functions to
+        subscribe to one event.
 
     Feature changes
+      - UsingClasses renamed to GetUseClasses for consistency. UsingClasses
+        UsingClasses will continue to exist but is now a deprecated name.
+      - HideMapObject and ShowMapObject now require the use of Vectors.
 
     Bugfixes
 
     Removed features
       - CreateRadioStream no longer allows specifying an ID. The plugin will
         instead always assign an ID automatically.
-      - LoadModule removed.
+      - Vector-expanded functions such as SetSpawnPlayerPos(x, y, z) have
+        been removed. Such functions now require the use of a Vector instead.
+
+    Removed deprecated features
+      - Deprecated LoadModule removed.
+      - Deprecated SetAmmuWeapon, IsAmmuWeaponEnabled and SetAmmuWeaponEnabled
+        all removed.
+      - Deprecated GetTime and GetFullTime removed.
+      - Deprecated GetFallEnabled and SetFallEnabled removed.
+      - Deprecated GetDeathmatchScoreboard and SetDeathmatchScoreboard removed.
+      - Deprecated GetWeaponSync and SetWeaponSync removed.
+      - Deprecated GetWeatherLock and SetWeatherLock removed.
+      - Deprecated GetMapName and SetMapName removed.
+      - Deprecated GetSkinID removed.
 
 v3.99
     Initial public release of 0.4-squirrel
