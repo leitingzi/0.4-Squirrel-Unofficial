@@ -1,6 +1,6 @@
 /*
    Project: Squirrel Plugin for Vice City Multiplayer (0.4)
-   File: CEntity.h
+   File: IEntity.h
 
    Copyright (c) 2015 Nelson Gomez (Stormeus)
 
@@ -19,3 +19,10 @@
 */
 
 #pragma once
+class IEntity
+{
+	public:
+		virtual ~IEntity() { }
+		virtual int GetID(void) = 0;
+		virtual void Delete(void) = 0;
+};
