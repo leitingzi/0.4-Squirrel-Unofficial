@@ -1,0 +1,17 @@
+v4.0.0
+    New features
+      - Ability to run multiple scripts on the same server.
+      - New interface for events that allows multiple functions to subscribe
+        to one event.
+
+    Feature changes
+
+    Bugfixes
+
+    Removed features
+      - CreateRadioStream no longer allows specifying an ID. The plugin will
+        instead always assign an ID automatically.
+      - LoadModule removed.
+
+v3.99
+    Initial public release of 0.4-squirrel
