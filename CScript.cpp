@@ -29,18 +29,13 @@ void CScript::Run() {
 	m_pRunningScript = new Sqrat::Script(m_pVM);
 
 	sq_setprintfunc(m_pVM, CSQIO::printfunc, CSQIO::errorfunc);
+	sqstd_seterrorhandlers(m_pVM);
 	CVMPopulator::Populate(m_pVM);
 
-	try {
-		m_pRunningScript->CompileFile(m_pszScriptName);
-		m_pRunningScript->Run();
+	m_pRunningScript->CompileFile(m_pszScriptName);
+	m_pRunningScript->Run();
 
-		CCallbackHandler::CallEvent(this, "onScriptLoad", offsetof(SScriptEvents, onScriptLoad), NULL, CScriptEvents::onScriptLoad);
-	}
-	catch (Sqrat::Error e) {
-		CConsole::OutputError("A script execution error was encountered.");
-		CConsole::OutputError(e.Message(m_pVM).c_str());
-	}
+	CCallbackHandler::CallEvent(this, "onScriptLoad", offsetof(SScriptEvents, onScriptLoad), NULL, CScriptEvents::onScriptLoad);
 }
 
 void CScript::ResetState() {

@@ -36,6 +36,8 @@
 //
 // By default, events will yield to other event subscribers and scripts. If some script event
 // returns 0 in an event, all processing on that event will end there.
+//
+// TODO: Move event callback and error handling into a different function due to repetition.
 int CCallbackHandler::CallEvent(CScript * pScript, const SQChar * pszCallbackName, uint32_t nEventOffset, uint64_t * pArgs, EventReceiver pfCallback) {
 	SScriptEvents * pEvents = pScript->E();
 
@@ -49,20 +51,18 @@ int CCallbackHandler::CallEvent(CScript * pScript, const SQChar * pszCallbackNam
 	if (pEventNode != NULL) {
 		SLListNode<SSquirrelFunction> * pCurrentNode = pEventNode;
 		while (pCurrentNode != NULL) {
-			try {
-				Sqrat::Function f = pCurrentNode->data.function;
-				if (!f.IsNull()) {
-					// If the callback signals for an early end to processing, we stop there.
-					if (pfCallback(pScript->V(), f, pArgs) == 0) {
-						return 0;
-					}
+			Sqrat::Function f = pCurrentNode->data.function;
+			HSQUIRRELVM v = pScript->V();
+
+			Sqrat::Error::Clear(v);
+			if (!f.IsNull()) {
+				// If the callback actually signals for an early end to processing, we stop there.
+				if (pfCallback(v, f, pArgs) == 0 && !Sqrat::Error::Occurred(v)) {
+					return 0;
 				}
 			}
-			catch (Sqrat::Error e) {
-				CConsole::OutputError("An error occurred while processing an event.");
-				CConsole::OutputError(e.Message(pScript->V()).c_str());
-			}
 
+			Sqrat::Error::Clear(v);
 			if (pCurrentNode->next != NULL) {
 				pCurrentNode = pCurrentNode->next;
 			}
@@ -70,11 +70,16 @@ int CCallbackHandler::CallEvent(CScript * pScript, const SQChar * pszCallbackNam
 	}
 	else if (pszCallbackName != NULL) {
 		Sqrat::Function f = Sqrat::RootTable(pScript->V()).GetFunction(pszCallbackName);
+		HSQUIRRELVM v = pScript->V();
+
+		Sqrat::Error::Clear(v);
 		if (!f.IsNull()) {
-			if (pfCallback(pScript->V(), f, pArgs) == 0) {
+			if (pfCallback(pScript->V(), f, pArgs) == 0 && !Sqrat::Error::Occurred(v)) {
 				return 0;
 			}
 		}
+
+		Sqrat::Error::Clear(v);
 	}
 
 	return 1;
