@@ -25,6 +25,8 @@ class CPlayer;
 class CCompatFunctions
 {
 	public:
+		static void Register(HSQUIRRELVM v);
+
 		static bool GetCinematicBorder(CPlayer * pPlayer);
 		static bool GetGreenScanLines(CPlayer * pPlayer);
 		static bool GetWhiteScanLines(CPlayer * pPlayer);
