@@ -44,7 +44,7 @@ void CScript::Run() {
 }
 
 void CScript::ResetState() {
-	CCallbackHandler::CallEvent(this, "onScripUnload", offsetof(SScriptEvents, onScriptUnload), NULL, CScriptEvents::onScriptUnload);
+	CCallbackHandler::CallEvent(this, "onScriptUnload", offsetof(SScriptEvents, onScriptUnload), NULL, CScriptEvents::onScriptUnload);
 
 	if (m_pVM) {
 		sq_close(m_pVM);
