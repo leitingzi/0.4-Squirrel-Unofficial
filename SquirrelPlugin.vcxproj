@@ -156,6 +156,7 @@
     <ClInclude Include="classes\CObject.h" />
     <ClInclude Include="classes\CPickup.h" />
     <ClInclude Include="classes\CPlayer.h" />
+    <ClInclude Include="classes\CSprite.h" />
     <ClInclude Include="classes\CTextdraw.h" />
     <ClInclude Include="classes\CTimer.h" />
     <ClInclude Include="classes\CVehicle.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="CSQIO.h" />
     <ClInclude Include="CUtilities.h" />
     <ClInclude Include="CVMPopulator.h" />
+    <ClInclude Include="functions\CCompatFunctions.h" />
     <ClInclude Include="functions\CEntityFunctions.h" />
     <ClInclude Include="functions\CMiscFunctions.h" />
     <ClInclude Include="functions\CRuleFunctions.h" />

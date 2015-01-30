@@ -132,6 +132,12 @@
     <ClInclude Include="functions\CMiscFunctions.h">
       <Filter>Header Files\functions</Filter>
     </ClInclude>
+    <ClInclude Include="classes\CSprite.h">
+      <Filter>Header Files\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="functions\CCompatFunctions.h">
+      <Filter>Header Files\classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
