@@ -22,6 +22,7 @@
 #include <squirrel.h>
 
 class CPlayer;
+class CVector;
 class CServerFunctions
 {
 	public:
@@ -48,4 +49,15 @@ class CServerFunctions
 		static const SQChar * GetGameModeName(void);
 		static int GetMaxPlayers(void);
 		static int GetKillDelay(void);
+
+		static void SetUseClasses(bool bEnabled);
+		static bool GetUseClasses(void);
+
+		static void SetSpawnPlayerPos(CVector * pPos);
+		static void SetSpawnCameraPos(CVector * pPos);
+		static void SetSpawnCameraLook(CVector * pPos);
+
+		static void BanIP(const SQChar * pszIP);
+		static void UnbanIP(const SQChar * pszIP);
+		static bool IsIPBanned(const SQChar * pszIP);
 };

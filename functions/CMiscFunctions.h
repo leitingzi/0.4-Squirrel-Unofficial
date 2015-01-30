@@ -26,4 +26,23 @@ class CMiscFunctions
 	public:
 		static int CreateRadioStream(const SQChar * pszRadioName, const SQChar * pszRadioURL, bool bCanSelect);
 		static void DestroyRadioStream(int nRadioID);
+
+		static int BindKey(bool bIsOnKeyDown, int nKey1, int nKey2 = 0, int nKey3 = 0);
+		static bool RemoveKeybind(int nBindId);
+		static void RemoveAllKeybinds(void);
+
+		static const SQChar * GetWeaponName(int nWeaponId);
+		static const SQChar * GetDistrictName(float fX, float fY);
+		static const SQChar * GetSkinName(int nSkinId);
+
+		static int GetWeaponID(const SQChar * pszName);
+		static unsigned int GetTickCount(void);
+
+		static float DistanceFromPoint(float fX1, float fY1, float fX2, float fY2);
+		static SQInteger ReloadScripts(HSQUIRRELVM v);
+
+		static int GetVehicleModelFromName(SQChar * pszName);
+		static const SQChar * GetVehicleNameFromModel(int nModel);
+
+		static bool IsNum(const SQChar * pszLine);
 };
