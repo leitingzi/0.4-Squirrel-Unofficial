@@ -23,10 +23,14 @@
 #include "SSquirrelFunction.h"
 #include <squirrel.h>
 
+class CScript;
 class CCallbackHandler
 {
 	public:
-		static void Register(PluginCallbacks * callbacks);
+		typedef int (*EventReceiver)(HSQUIRRELVM v, Sqrat::Function f, uint64_t * pArgs);
+		static void Register(PluginCallbacks * pCallbacks);
+		static int CallEvent(CScript * pScript, const SQChar * pszCallbackName, uint32_t nEventOffset, uint64_t * pArgs, EventReceiver pfCallback);
+		static int CallAllEvents(const SQChar * pszCallbackName, uint32_t nEventOffset, uint64_t * pArgs, EventReceiver pfCallback);
 
 	private:
 		static int OnInitServer();

@@ -31,6 +31,15 @@
 //
 // Whenever adding an event here, make sure to add it to CScript::DestroyEvents.
 // If you don't, memory leaks WILL occur.
+//
+// It'd also be wise to make sure that CScriptEvents has an appropriate callback
+// for CCallbackHandler, and that something in CCallbackHandler is making use of it.
+//
+// Basically the flow for adding a script event is:
+//     1. Declare here.
+//     2. Add to CScript::DestroyEvents
+//     3. Implement in CScriptEvents
+//     4. Make sure something in CCallbackHandler actually calls the new event
 struct SScriptEvents {
 	DEFINE_EVENT(onServerStart);
 	DEFINE_EVENT(onServerStop);

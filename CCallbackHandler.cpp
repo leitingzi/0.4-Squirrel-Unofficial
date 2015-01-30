@@ -19,28 +19,79 @@
 */
 
 #include "CCallbackHandler.h"
+#include "CConsole.h"
 #include "CScript.h"
+#include "CScriptEvents.h"
 #include "Main.h"
 
-#define REGISTER_CALLBACK(x) callbacks->x = x
-#define BEGIN_EVENT_CALL(x) \
-	for (CCore::ScriptIterator it = g_pCore->GetScriptsIterator(); it != g_pCore->GetScriptsEnd(); it++) { \
-		CScript * pScript = it->second; \
-		SScriptEvents * pEvents = pScript->E(); \
-		SLListNode<SSquirrelFunction> * eventNode = pEvents->x; \
-		if (eventNode != NULL) { \
-			SLListNode<SSquirrelFunction> current = *eventNode; \
-			do { \
-				Sqrat::Function x = current.data.function;
+// nEventOffset is the offset, in bytes, from SScriptEvents that the event node is at.
+//
+// pArgs is an array of uint64_t values which can be adapted for various purposes, such as:
+//     - pointers to other objects to be dereferenced by the callback
+//     - IDs for vehicles, players, or other entitites
+//     - literal values such as floats and doubles
+//
+// The way that CallEvent is set up, ALL events in ALL scripts must agree to allow an event
+// to be performed before the VC:MP server allows an action to be performed.
+//
+// By default, events will yield to other event subscribers and scripts. If some script event
+// returns 0 in an event, all processing on that event will end there.
+int CCallbackHandler::CallEvent(CScript * pScript, const SQChar * pszCallbackName, uint32_t nEventOffset, uint64_t * pArgs, EventReceiver pfCallback) {
+	SScriptEvents * pEvents = pScript->E();
 
-#define END_EVENT_CALL(x) \
-				if (current.next != NULL) { \
-					current = *(current.next); \
-				} \
-			} while (current.next != NULL); \
-		} \
+	// Whoever is calling this function uses offsetof(member) so the offset should be trustworthy.
+	//
+	// From there, we add the offset to the value of the pointer in order to get a new pointer, which
+	// takes us to the event node itself.
+	SLListNode<SSquirrelFunction> ** ppEventNode = (SLListNode<SSquirrelFunction> **)pEvents + nEventOffset;
+	SLListNode<SSquirrelFunction> * pEventNode = *ppEventNode;
+
+	if (pEventNode != NULL) {
+		SLListNode<SSquirrelFunction> * pCurrentNode = pEventNode;
+		while (pCurrentNode != NULL) {
+			try {
+				Sqrat::Function f = pCurrentNode->data.function;
+				if (!f.IsNull()) {
+					// If the callback signals for an early end to processing, we stop there.
+					if (pfCallback(pScript->V(), f, pArgs) == 0) {
+						return 0;
+					}
+				}
+			}
+			catch (Sqrat::Error e) {
+				CConsole::OutputError("An error occurred while processing an event.");
+				CConsole::OutputError(e.Message(pScript->V()).c_str());
+			}
+
+			if (pCurrentNode->next != NULL) {
+				pCurrentNode = pCurrentNode->next;
+			}
+		}
+	}
+	else if (pszCallbackName != NULL) {
+		Sqrat::Function f = Sqrat::RootTable(pScript->V()).GetFunction(pszCallbackName);
+		if (!f.IsNull()) {
+			if (pfCallback(pScript->V(), f, pArgs) == 0) {
+				return 0;
+			}
+		}
 	}
 
+	return 1;
+}
+
+int CCallbackHandler::CallAllEvents(const SQChar * pszCallbackName, uint32_t nEventOffset, uint64_t * pArgs, EventReceiver pfCallback) {
+	for (CCore::ScriptIterator it = g_pCore->GetScriptsIterator(); it != g_pCore->GetScriptsEnd(); it++) {
+		CScript * pScript = it->second;
+		if (CallEvent(pScript, pszCallbackName, nEventOffset, pArgs, pfCallback) == 0) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+#define REGISTER_CALLBACK(x) callbacks->x = x
 void CCallbackHandler::Register(PluginCallbacks * callbacks) {
 	REGISTER_CALLBACK(OnInitServer);
 	REGISTER_CALLBACK(OnShutdownServer);
@@ -96,17 +147,12 @@ void CCallbackHandler::Register(PluginCallbacks * callbacks) {
 }
 
 int CCallbackHandler::OnInitServer() {
-	BEGIN_EVENT_CALL(onServerStart)
-	{
-		onServerStart();
-	}
-	END_EVENT_CALL(onServerStart);
-
+	CallAllEvents("onServerStart", offsetof(SScriptEvents, onServerStart), NULL, CScriptEvents::onServerStart);
 	return 1;
 }
 
 void CCallbackHandler::OnShutdownServer() {
-
+	CallAllEvents("onServerStop", offsetof(SScriptEvents, onServerStop), NULL, CScriptEvents::onServerStop);
 }
 
 void CCallbackHandler::OnFrame(float fElapsedTime) {

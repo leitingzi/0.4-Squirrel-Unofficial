@@ -153,6 +153,7 @@
     <ClInclude Include="CConsole.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CScript.h" />
+    <ClInclude Include="CScriptEvents.h" />
     <ClInclude Include="CSQIO.h" />
     <ClInclude Include="CUtilities.h" />
     <ClInclude Include="CVMPopulator.h" />
@@ -167,6 +168,7 @@
     <ClCompile Include="CConsole.cpp" />
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CScript.cpp" />
+    <ClCompile Include="CScriptEvents.cpp" />
     <ClCompile Include="CSQIO.cpp" />
     <ClCompile Include="CVMPopulator.cpp" />
     <ClCompile Include="Main.cpp" />

@@ -51,6 +51,9 @@
     <ClInclude Include="CUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CScriptEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CVMPopulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CScriptEvents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

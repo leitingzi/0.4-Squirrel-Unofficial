@@ -21,6 +21,7 @@
 #include "CScript.h"
 #include "CConsole.h"
 #include "CUtilities.h"
+#include "CScriptEvents.h"
 
 void CScript::Run() {
 	m_pEvents = new SScriptEvents;
@@ -33,6 +34,8 @@ void CScript::Run() {
 	try {
 		m_pRunningScript->CompileFile(m_pszScriptName);
 		m_pRunningScript->Run();
+
+		CCallbackHandler::CallEvent(this, "onScriptLoad", offsetof(SScriptEvents, onScriptLoad), NULL, CScriptEvents::onScriptLoad);
 	}
 	catch (Sqrat::Error e) {
 		CConsole::OutputError("A script execution error was encountered.");
@@ -41,6 +44,8 @@ void CScript::Run() {
 }
 
 void CScript::ResetState() {
+	CCallbackHandler::CallEvent(this, "onScripUnload", offsetof(SScriptEvents, onScriptUnload), NULL, CScriptEvents::onScriptUnload);
+
 	if (m_pVM) {
 		sq_close(m_pVM);
 		m_pVM = NULL;
