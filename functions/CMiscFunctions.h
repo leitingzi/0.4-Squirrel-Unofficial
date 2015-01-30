@@ -19,3 +19,11 @@
 */
 
 #pragma once
+#include <squirrel.h>
+
+class CMiscFunctions
+{
+	public:
+		static int CreateRadioStream(const SQChar * pszRadioName, const SQChar * pszRadioURL, bool bCanSelect);
+		static void DestroyRadioStream(int nRadioID);
+};
