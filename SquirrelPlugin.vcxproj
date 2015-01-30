@@ -152,7 +152,7 @@
     <ClInclude Include="CCallbackHandler.h" />
     <ClInclude Include="CConsole.h" />
     <ClInclude Include="CCore.h" />
-    <ClInclude Include="classes\CEntity.h" />
+    <ClInclude Include="classes\IEntity.h" />
     <ClInclude Include="classes\CObject.h" />
     <ClInclude Include="classes\CPickup.h" />
     <ClInclude Include="classes\CPlayer.h" />

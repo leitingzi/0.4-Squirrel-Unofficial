@@ -90,9 +90,6 @@
     <ClInclude Include="classes\CTextdraw.h">
       <Filter>Header Files\classes</Filter>
     </ClInclude>
-    <ClInclude Include="classes\CEntity.h">
-      <Filter>Header Files\classes</Filter>
-    </ClInclude>
     <ClInclude Include="structures\CEntityProperty.h">
       <Filter>Header Files\structures</Filter>
     </ClInclude>
@@ -137,6 +134,9 @@
     </ClInclude>
     <ClInclude Include="functions\CCompatFunctions.h">
       <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\IEntity.h">
+      <Filter>Header Files\classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
