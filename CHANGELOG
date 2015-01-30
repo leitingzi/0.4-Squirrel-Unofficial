@@ -8,6 +8,10 @@ v4.0.0
       - UsingClasses renamed to GetUseClasses for consistency. UsingClasses
         UsingClasses will continue to exist but is now a deprecated name.
       - HideMapObject and ShowMapObject now require the use of Vectors.
+      - Player.Weapon can now be set using Player.Weapon = WeaponID, which
+        will automatically give the player that weapon with 5000 ammo.
+      - Player.Ammo can now be set using Player.Ammo = Amount, which is
+        identical to Player.SetWeapon(Player.Weapon, Amount)
 
     Bugfixes
 
@@ -16,6 +20,9 @@ v4.0.0
         instead always assign an ID automatically.
       - Vector-expanded functions such as SetSpawnPlayerPos(x, y, z) have
         been removed. Such functions now require the use of a Vector instead.
+      - Removed Player.SetMarker(). Use Player.HasMarker instead.
+      - Removed Player.SetDrunkLevel(). Use Player.IsDrunk until the ability
+        to set drunk level returns to the server.
 
     Removed deprecated features
       - Deprecated LoadModule removed.
