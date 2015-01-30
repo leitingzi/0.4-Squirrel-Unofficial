@@ -24,7 +24,7 @@ inline bool EvaluateEventResult(Sqrat::SharedPtr<int> pnResult) {
 		return 1;
 	}
 
-	return *pnResult;
+	return (*pnResult == 1);
 }
 
 EVENTCALL_IMPL(onServerStart) {
