@@ -42,6 +42,7 @@ class CRuleFunctions
 		static void SetShowNametags(bool bToggle);
 		static void SetJoinMessages(bool bToggle);
 		static void SetDeathMessages(bool bToggle);
+		static void SetChatTagsByDefault(bool bToggle);
 
 		static bool GetSyncFrameLimiter(void);
 		static bool GetFrameLimiter(void);
@@ -59,4 +60,5 @@ class CRuleFunctions
 		static bool GetShowNametags(void);
 		static bool GetJoinMessages(void);
 		static bool GetDeathMessages(void);
+		static bool GetChatTagsByDefault(void);
 };

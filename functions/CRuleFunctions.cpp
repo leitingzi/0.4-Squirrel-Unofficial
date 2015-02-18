@@ -23,6 +23,7 @@
 #include "../Main.h"
 #include "CRuleFunctions.h"
 #include <sqrat.h>
+#include "..\classes\CPlayer.h"
 
 #define REGISTER_TOGGLE(x) Sqrat::RootTable(v).Func(_SC("Set## x ##"), CRuleFunctions::Set ## x); \
 	Sqrat::RootTable(v).Func(_SC("Get## x ##"), CRuleFunctions::Get ## x)
@@ -44,6 +45,7 @@ void CRuleFunctions::Register(HSQUIRRELVM v) {
 	REGISTER_TOGGLE(ShowNametags);
 	REGISTER_TOGGLE(JoinMessages);
 	REGISTER_TOGGLE(DeathMessages);
+	REGISTER_TOGGLE(ChatTagsByDefault);
 }
 
 void CRuleFunctions::SetDrivebyEnabled(bool bToggle) {
@@ -60,6 +62,14 @@ void CRuleFunctions::SetShowOnRadar(bool bToggle) {
 
 bool CRuleFunctions::GetShowOnRadar(void) {
 	return g_pCore->F()->EnabledShowMarkers() == 1;
+}
+
+void CRuleFunctions::SetChatTagsByDefault(bool bToggle) {
+	g_pCore->F()->ToggleChatTagsByDefaultEnabled(bToggle);
+}
+
+bool CRuleFunctions::GetChatTagsByDefault(void) {
+	return g_pCore->F()->EnabledChatTagsByDefault() == 1;
 }
 
 #define IMPL_STDTOGGLE(x) void CRuleFunctions::Set ## x(bool bToggle) {\
