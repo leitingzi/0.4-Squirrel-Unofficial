@@ -22,11 +22,11 @@
 #include <sqrat.h>
 #include "../Main.h"
 
-class ARGB
+class CARGB
 {
 	public:
-		ARGB( int a, int r, int g, int b ) { this->a = a; this->r = r; this->g = g; this->b = b; }
-		ARGB() { this->a = 0; this->r = 0; this->g = 0; this->b = 0; }
+		CARGB( int a, int r, int g, int b ) { this->a = a; this->r = r; this->g = g; this->b = b; }
+		CARGB() { this->a = 0; this->r = 0; this->g = 0; this->b = 0; }
 			
 		int a;
 		int r;
@@ -45,14 +45,14 @@ class ARGB
 		}
 
 		static void Register(HSQUIRRELVM v) {
-			Sqrat::Class<ARGB> c(v, Sqrat::string("ARGB"));
+			Sqrat::Class<CARGB> c(v, Sqrat::string("ARGB"));
 			c
-				.Var(_SC("a"), &ARGB::a)
-				.Var(_SC("r"), &ARGB::r)
-				.Var(_SC("g"), &ARGB::g)
-				.Var(_SC("b"), &ARGB::b)
-				.Func(_SC("ToInt"), &ARGB::ToInt)
-				.Func(_SC("_tostring"), &ARGB::ToString);
+				.Var(_SC("a"), &CARGB::a)
+				.Var(_SC("r"), &CARGB::r)
+				.Var(_SC("g"), &CARGB::g)
+				.Var(_SC("b"), &CARGB::b)
+				.Func(_SC("ToInt"), &CARGB::ToInt)
+				.Func(_SC("_tostring"), &CARGB::ToString);
 
 			Sqrat::RootTable(v).Bind(_SC("ARGB"), c);
 		}
