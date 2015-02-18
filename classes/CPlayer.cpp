@@ -185,6 +185,7 @@ const SQChar * CPlayer::GetName(void) {
 
 CVector * CPlayer::GetPosition(void) {
 	// TODO
+	return NULL;
 }
 
 float CPlayer::GetHealth(void) {
