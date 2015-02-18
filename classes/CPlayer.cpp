@@ -135,7 +135,7 @@ void CPlayer::SetAlpha(int nAlpha, int nFadeTime) {
 }
 
 bool CPlayer::Redirect(const SQChar * pszIp, unsigned int usPort, const SQChar * pszNickname, const SQChar * pszSrvPass, const SQChar * pszUserPass) {
-	return g_pCore->F()->RedirectPlayerToServer(m_nPlayerId, pszIp, usPort, pszNickname, pszSrvPass, pszUserPass);
+	return g_pCore->F()->RedirectPlayerToServer(m_nPlayerId, pszIp, usPort, pszNickname, pszSrvPass, pszUserPass) == 1;
 }
 
 void CPlayer::SetAdmin(bool bToggle) {
@@ -375,19 +375,19 @@ CObject * CPlayer::GetObjectStandingOn(void) {
 }
 
 bool CPlayer::GetTypingStatus(void) {
-	return g_pCore->F()->IsPlayerTyping(m_nPlayerId);
+	return g_pCore->F()->IsPlayerTyping(m_nPlayerId) == 1;
 }
 
 bool CPlayer::GetIdleStatus(void) {
-	return g_pCore->F()->IsPlayerAway(m_nPlayerId);
+	return g_pCore->F()->IsPlayerAway(m_nPlayerId) == 1;
 }
 
 bool CPlayer::GetPlayerOnFireStatus(void) {
-	return g_pCore->F()->GetPlayerOnFireStatus(m_nPlayerId);
+	return g_pCore->F()->GetPlayerOnFireStatus(m_nPlayerId) == 1;
 }
 
 bool CPlayer::GetPlayerCrouchStatus(void) {
-	return g_pCore->F()->GetPlayerCrouchStatus(m_nPlayerId);
+	return g_pCore->F()->GetPlayerCrouchStatus(m_nPlayerId) == 1;
 }
 
 void CPlayer::Kick(void) {
@@ -431,7 +431,7 @@ int CPlayer::GetAmmoAtSlot(int nSlot) {
 }
 
 bool CPlayer::GetStreamedToPlayer(CPlayer * pOther) {
-	if (pOther) return g_pCore->F()->IsPlayerStreamedForPlayer(m_nPlayerId, pOther->GetID());
+	if (pOther) return g_pCore->F()->IsPlayerStreamedForPlayer(m_nPlayerId, pOther->GetID()) == 1;
 	else return false;
 }
 
