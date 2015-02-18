@@ -19,3 +19,110 @@
 */
 
 #pragma once
+#include <sqrat.h>
+#include "../Main.h"
+
+class CQuaternion
+{
+	public:
+		typedef void (*QuaternionSetCallback)(CQuaternion* pQuat);
+		QuaternionSetCallback* m_pCallback = NULL;
+
+		CQuaternion( float x, float y, float z, float w ) { this->w = w; this->x = x; this->y = y; this->z = z; }
+		CQuaternion( int x, int y, int z, int w ) { this->w = w; this->x = x; this->y = y; this->z = z; }
+		CQuaternion() { this->w = 0.0f; this->x = 0.0f; this->y = 0.0f; this->z = 0.0f; }
+
+		void SetCallback(QuaternionSetCallback* pCallback) { m_pCallback = pCallback; }
+		void FreeCallback() { m_pCallback = NULL; }
+
+		void SetX(int x) { this->x = x; ProcessCallback(); }
+		void SetY(int y) { this->y = y; ProcessCallback(); }
+		void SetZ(int z) { this->z = z; ProcessCallback(); }
+		void SetW(int w) { this->w = w; ProcessCallback(); }
+
+		int GetX() { return x; }
+		int GetY() { return y; }
+		int GetZ() { return z; }
+		int GetW() { return w; }
+
+		bool operator ==(const CQuaternion &q) const {
+			return this->w == q.w && this->x == q.x && this->y == q.y && this->z == q.z;
+		}
+
+		CQuaternion operator -(void) const {
+			return CQuaternion(-w, -x, -y, -z);
+		}
+
+		CQuaternion operator +(const CQuaternion &q) const {
+			return CQuaternion(this->w + q.w, this->x + q.x, this->y + q.y, this->z + q.z);
+		}
+
+		CQuaternion operator -(const CQuaternion &q) const {
+			return CQuaternion(this->w - q.w, this->x - q.x, this->y - q.y, this->z - q.z);
+		}
+
+		CQuaternion operator *(const float f) const {
+			return CQuaternion(this->w * f, this->x * f, this->y * f, this->z * f);
+		}
+
+		CQuaternion operator /(const float f) const {
+			return CQuaternion(this->w / f, this->x / f, this->y / f, this->z / f);
+		}
+
+		CQuaternion& operator =(const CQuaternion &q) {
+			this->w = q.w;
+			this->x = q.x;
+			this->y = q.y;
+			this->z = q.z;
+			ProcessCallback();
+
+			return *this;
+		}
+
+		CQuaternion& operator =(const float q) {
+			this->w = 0.0f;
+			this->x = 0.0f;
+			this->y = 0.0f;
+			this->z = q;
+			ProcessCallback();
+
+			return *this;
+		}
+
+		const std::string ToString() {
+			std::basic_stringstream<SQChar> out;
+			out << _SC("(") << x << _SC(",") << y << _SC(",") << z << _SC(",") << w << _SC(")");
+
+			return out.str();
+		}
+
+		static void Register(HSQUIRRELVM v) {
+			Sqrat::Class<CQuaternion> c(v, Sqrat::string("Quaternion"));
+			c
+				.Prop(_SC("x"), &CQuaternion::GetX, &CQuaternion::SetX)
+				.Prop(_SC("y"), &CQuaternion::GetY, &CQuaternion::SetY)
+				.Prop(_SC("z"), &CQuaternion::GetZ, &CQuaternion::SetZ)
+				.Prop(_SC("w"), &CQuaternion::GetW, &CQuaternion::SetW)
+
+				.Func(_SC("_tostring"), &CQuaternion::ToString)
+				.Func(_SC("_add"), &CQuaternion::operator +)
+				.Func(_SC("_mul"), &CQuaternion::operator *)
+				.Func(_SC("_div"), &CQuaternion::operator /)
+				.Func<CQuaternion(CQuaternion::*)(void) const>(_SC("_unm"), &CQuaternion::operator -)
+				.Func<CQuaternion(CQuaternion::*)(const CQuaternion&) const>(_SC("_sub"), &CQuaternion::operator -);
+
+			Sqrat::RootTable(v).Bind(_SC("Quaternion"), c);
+		}
+
+	private:
+		void ProcessCallback() {
+			if (m_pCallback) {
+				(*m_pCallback)(this);
+			}
+		}
+
+		float w;
+		float x;
+		float y;
+		float z;
+};
