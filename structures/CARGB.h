@@ -25,7 +25,7 @@
 class CARGB
 {
 	public:
-		typedef void (*ARGBSetCallback)(CARGB* pBounds);
+		typedef void (*ARGBSetCallback)(CARGB* pARGB);
 		ARGBSetCallback* m_pCallback = NULL;
 
 		CARGB( int a, int r, int g, int b ) { this->a = a; this->r = r; this->g = g; this->b = b; }
