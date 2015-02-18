@@ -142,7 +142,6 @@ class CPlayer : public IEntity
 
 		void GiveMoney(int nMoney);
 		void AddSpeed(CVector * pSpeed);
-		void SetSpeed(CVector * pSpeed);
 		void SetWantedLevel(int nWantedLevel);
 		void SetCameraPos(CVector * pCamPos, CVector * pLookPos);
 		void LegacySetAnim(int nAnim);
