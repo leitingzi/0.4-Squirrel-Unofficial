@@ -19,10 +19,7 @@
 */
 
 #ifdef WIN32
-	#define WIN32_LEANANDMEAN
 	#define PLUGIN_EXPORT __declspec(dllexport)
-
-	#include <Windows.h>
 #else
 	#define PLUGIN_EXPORT
 #endif
