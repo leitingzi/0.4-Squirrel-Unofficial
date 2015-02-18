@@ -25,13 +25,24 @@
 class CARGB
 {
 	public:
+		typedef void (*ARGBSetCallback)(CARGB* pBounds);
+		ARGBSetCallback* m_pCallback = NULL;
+
 		CARGB( int a, int r, int g, int b ) { this->a = a; this->r = r; this->g = g; this->b = b; }
 		CARGB() { this->a = 0; this->r = 0; this->g = 0; this->b = 0; }
-			
-		int a;
-		int r;
-		int g;
-		int b;
+
+		void SetCallbck(ARGBSetCallback* pCallback) { m_pCallback = pCallback; }
+		void FreeCallback() { m_pCallback = NULL; }
+
+		void SetA(int a) { this->a = a; ProcessCallback(); }
+		void SetR(int r) { this->r = r; ProcessCallback(); }
+		void SetG(int g) { this->g = g; ProcessCallback(); }
+		void SetB(int b) { this->b = b; ProcessCallback(); }
+
+		int GetA() { return a; }
+		int GetR() { return r; }
+		int GetG() { return g; }
+		int GetB() { return b; }
 
 		unsigned int ToInt() {
 			return this->a << 24 | this->r << 16 | this->g << 8 | this->b;
@@ -47,13 +58,25 @@ class CARGB
 		static void Register(HSQUIRRELVM v) {
 			Sqrat::Class<CARGB> c(v, Sqrat::string("ARGB"));
 			c
-				.Var(_SC("a"), &CARGB::a)
-				.Var(_SC("r"), &CARGB::r)
-				.Var(_SC("g"), &CARGB::g)
-				.Var(_SC("b"), &CARGB::b)
+				.Prop(_SC("a"), &CARGB::GetA, &CARGB::SetA)
+				.Prop(_SC("r"), &CARGB::GetR, &CARGB::GetR)
+				.Prop(_SC("g"), &CARGB::GetG, &CARGB::GetG)
+				.Prop(_SC("b"), &CARGB::GetB, &CARGB::GetB)
 				.Func(_SC("ToInt"), &CARGB::ToInt)
 				.Func(_SC("_tostring"), &CARGB::ToString);
 
 			Sqrat::RootTable(v).Bind(_SC("ARGB"), c);
 		}
+
+	private:
+		void ProcessCallback() {
+			if (m_pCallback) {
+				(*m_pCallback)(this);
+			}
+		}
+
+		int a;
+		int r;
+		int g;
+		int b;
 };
