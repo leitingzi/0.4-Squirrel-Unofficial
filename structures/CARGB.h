@@ -19,3 +19,41 @@
 */
 
 #pragma once
+#include <sqrat.h>
+#include "../Main.h"
+
+class ARGB
+{
+	public:
+		ARGB( int a, int r, int g, int b ) { this->a = a; this->r = r; this->g = g; this->b = b; }
+		ARGB() { this->a = 0; this->r = 0; this->g = 0; this->b = 0; }
+			
+		int a;
+		int r;
+		int g;
+		int b;
+
+		unsigned int ToInt() {
+			return this->a << 24 | this->r << 16 | this->g << 8 | this->b;
+		}
+
+		const std::string ToString() {
+			std::basic_stringstream<SQChar> out;
+			out << _SC("(") << a << _SC(",") << r << _SC(",") << g << _SC(",") << b << _SC(")");
+
+			return out.str();
+		}
+
+		static void Register(HSQUIRRELVM v) {
+			Sqrat::Class<ARGB> c(v, Sqrat::string("ARGB"));
+			c
+				.Var(_SC("a"), &ARGB::a)
+				.Var(_SC("r"), &ARGB::r)
+				.Var(_SC("g"), &ARGB::g)
+				.Var(_SC("b"), &ARGB::b)
+				.Func(_SC("ToInt"), &ARGB::ToInt)
+				.Func(_SC("_tostring"), &ARGB::ToString);
+
+			Sqrat::RootTable(v).Bind(_SC("ARGB"), c);
+		}
+};
