@@ -143,7 +143,6 @@ class CPlayer : public IEntity
 		void GiveMoney(int nMoney);
 		void AddSpeed(CVector * pSpeed);
 		void SetSpeed(CVector * pSpeed);
-		void SetInterior(int nInterior);
 		void SetWantedLevel(int nWantedLevel);
 		void SetCameraPos(CVector * pCamPos, CVector * pLookPos);
 		void LegacySetAnim(int nAnim);
@@ -156,4 +155,7 @@ class CPlayer : public IEntity
 		
 	private:
 		int m_nPlayerId;
+		char m_szPlayerName[25];
+		char m_szPlayerIP[16];
+		char m_szPlayerHWID[41];
 };

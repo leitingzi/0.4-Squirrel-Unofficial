@@ -35,6 +35,8 @@ v4.0.0
       - Deprecated GetWeatherLock and SetWeatherLock removed.
       - Deprecated GetMapName and SetMapName removed.
       - Deprecated GetSkinID removed.
+      - Deprecated Player.SetInterior. Teleport them to the interior location
+        instead.
 
 v3.99
     Initial public release of 0.4-squirrel
