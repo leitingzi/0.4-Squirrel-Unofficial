@@ -28,9 +28,18 @@
 #include "functions/CServerFunctions.h"
 #include "functions/CWorldFunctions.h"
 
+#include "structures/CARGB.h"
+#include "structures/CBounds.h"
+#include "structures/CQuaternion.h"
+#include "structures/CRGB.h"
+#include "structures/CRGBA.h"
+#include "structures/CVector.h"
+#include "structures/CWastedSettings.h"
+
 void CVMPopulator::Populate(HSQUIRRELVM v) {
 	RegisterFunctions(v);
 	RegisterClasses(v);
+	RegisterStructures(v);
 	RegisterConstants(v);
 }
 
@@ -43,8 +52,17 @@ void CVMPopulator::RegisterFunctions(HSQUIRRELVM v) {
 	CWorldFunctions::Register(v);
 }
 
-void CVMPopulator::RegisterClasses(HSQUIRRELVM v) {
+void CVMPopulator::RegisterStructures(HSQUIRRELVM v) {
+	CARGB::Register(v);
+	CBounds::Register(v);
+	CQuaternion::Register(v);
+	CRGB::Register(v);
+	CRGBA::Register(v);
+	CVector::Register(v);
+}
 
+void CVMPopulator::RegisterClasses(HSQUIRRELVM v) {
+	
 }
 
 void CVMPopulator::RegisterConstants(HSQUIRRELVM v) {
