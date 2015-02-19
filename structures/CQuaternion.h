@@ -35,15 +35,15 @@ class CQuaternion
 		void SetCallback(QuaternionSetCallback* pCallback) { m_pCallback = pCallback; }
 		void FreeCallback() { m_pCallback = NULL; }
 
-		void SetX(int x) { this->x = x; ProcessCallback(); }
-		void SetY(int y) { this->y = y; ProcessCallback(); }
-		void SetZ(int z) { this->z = z; ProcessCallback(); }
-		void SetW(int w) { this->w = w; ProcessCallback(); }
+		void SetX(float x) { this->x = x; ProcessCallback(); }
+		void SetY(float y) { this->y = y; ProcessCallback(); }
+		void SetZ(float z) { this->z = z; ProcessCallback(); }
+		void SetW(float w) { this->w = w; ProcessCallback(); }
 
-		int GetX() { return x; }
-		int GetY() { return y; }
-		int GetZ() { return z; }
-		int GetW() { return w; }
+		float GetX() { return x; }
+		float GetY() { return y; }
+		float GetZ() { return z; }
+		float GetW() { return w; }
 
 		bool operator ==(const CQuaternion &q) const {
 			return this->w == q.w && this->x == q.x && this->y == q.y && this->z == q.z;
