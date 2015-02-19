@@ -20,24 +20,19 @@
 
 #pragma once
 #include <sqrat.h>
+#include "IRefreshableStructure.h"
 #include "../Main.h"
 
-class CARGB
+class CARGB : IRefreshableStructure<CARGB>
 {
 	public:
-		typedef void (*ARGBSetCallback)(CARGB* pARGB);
-		ARGBSetCallback* m_pCallback = NULL;
-
 		CARGB( int a, int r, int g, int b ) { this->a = a; this->r = r; this->g = g; this->b = b; }
 		CARGB() { this->a = 0; this->r = 0; this->g = 0; this->b = 0; }
 
-		void SetCallbck(ARGBSetCallback* pCallback) { m_pCallback = pCallback; }
-		void FreeCallback() { m_pCallback = NULL; }
-
-		void SetA(int a) { this->a = a; ProcessCallback(); }
-		void SetR(int r) { this->r = r; ProcessCallback(); }
-		void SetG(int g) { this->g = g; ProcessCallback(); }
-		void SetB(int b) { this->b = b; ProcessCallback(); }
+		void SetA(int a) { this->a = a; ProcessCallback(this); }
+		void SetR(int r) { this->r = r; ProcessCallback(this); }
+		void SetG(int g) { this->g = g; ProcessCallback(this); }
+		void SetB(int b) { this->b = b; ProcessCallback(this); }
 
 		int GetA() { return a; }
 		int GetR() { return r; }
@@ -69,12 +64,6 @@ class CARGB
 		}
 
 	private:
-		void ProcessCallback() {
-			if (m_pCallback) {
-				(*m_pCallback)(this);
-			}
-		}
-
 		int a;
 		int r;
 		int g;

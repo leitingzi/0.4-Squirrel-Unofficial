@@ -19,26 +19,22 @@
 */
 
 #pragma once
+#pragma warning( disable : 4244 )
+
 #include <sqrat.h>
+#include "IRefreshableStructure.h"
 #include "../Main.h"
 
-class CQuaternion
+class CQuaternion : IRefreshableStructure<CQuaternion>
 {
 	public:
-		typedef void (*QuaternionSetCallback)(CQuaternion* pQuat);
-		QuaternionSetCallback* m_pCallback = NULL;
-
 		CQuaternion( float x, float y, float z, float w ) { this->w = w; this->x = x; this->y = y; this->z = z; }
-		CQuaternion( int x, int y, int z, int w ) { this->w = w; this->x = x; this->y = y; this->z = z; }
 		CQuaternion() { this->w = 0.0f; this->x = 0.0f; this->y = 0.0f; this->z = 0.0f; }
 
-		void SetCallback(QuaternionSetCallback* pCallback) { m_pCallback = pCallback; }
-		void FreeCallback() { m_pCallback = NULL; }
-
-		void SetX(float x) { this->x = x; ProcessCallback(); }
-		void SetY(float y) { this->y = y; ProcessCallback(); }
-		void SetZ(float z) { this->z = z; ProcessCallback(); }
-		void SetW(float w) { this->w = w; ProcessCallback(); }
+		void SetX(float x) { this->x = x; ProcessCallback(this); }
+		void SetY(float y) { this->y = y; ProcessCallback(this); }
+		void SetZ(float z) { this->z = z; ProcessCallback(this); }
+		void SetW(float w) { this->w = w; ProcessCallback(this); }
 
 		float GetX() { return x; }
 		float GetY() { return y; }
@@ -74,7 +70,7 @@ class CQuaternion
 			this->x = q.x;
 			this->y = q.y;
 			this->z = q.z;
-			ProcessCallback();
+			ProcessCallback(this);
 
 			return *this;
 		}
@@ -84,7 +80,7 @@ class CQuaternion
 			this->x = 0.0f;
 			this->y = 0.0f;
 			this->z = q;
-			ProcessCallback();
+			ProcessCallback(this);
 
 			return *this;
 		}
@@ -115,12 +111,6 @@ class CQuaternion
 		}
 
 	private:
-		void ProcessCallback() {
-			if (m_pCallback) {
-				(*m_pCallback)(this);
-			}
-		}
-
 		float w;
 		float x;
 		float y;

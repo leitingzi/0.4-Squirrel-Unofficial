@@ -19,6 +19,8 @@
 */
 
 #pragma once
+#pragma warning( disable : 4244 )
+
 #include <sqrat.h>
 #include "../Main.h"
 
@@ -26,14 +28,6 @@ class CBounds
 {
 	public:
 		CBounds( float maxX, float minX, float maxY, float minY )
-		{
-			this->maxX = maxX;
-			this->minX = minX;
-			this->maxY = maxY;
-			this->minY = minY;
-		}
-
-		CBounds( int maxX, int minX, int maxY, int minY )
 		{
 			this->maxX = maxX;
 			this->minX = minX;
