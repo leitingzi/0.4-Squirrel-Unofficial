@@ -73,14 +73,14 @@ class CPlayer : public IEntity
 		void SetDrunkStatus(bool bToggle);
 
 		const SQChar * GetName(void);
-		CVector * GetPosition(void);
+		CVector GetPosition(void);
 		float GetHealth(void);
 		float GetArmour(void);
 		int GetWorld(void);
 		int GetSecondaryWorld(void);
 		int GetTeam(void);
 		int GetSkin(void);
-		CRGB * GetColour(void);
+		CRGB GetColour(void);
 		int GetMoney(void);
 		int GetScore(void);
 		unsigned int GetImmunity(void);
@@ -90,7 +90,7 @@ class CPlayer : public IEntity
 		CPlayer * GetSpectateTarget(void);
 		int GetWeapon(void);
 		int GetWeaponAmmo(void);
-		CVector * GetSpeed(void);
+		CVector GetSpeed(void);
 
 		bool GetAdmin(void);
 		bool GetFrozen(void);
@@ -117,8 +117,8 @@ class CPlayer : public IEntity
 		const SQChar * GetUniqueID(void);
 		int GetPlayerAction(void);
 		int GetPlayerGameKeys(void);
-		CVector * GetPlayerAimDir(void);
-		CVector * GetPlayerAimPos(void);
+		CVector GetPlayerAimDir(void);
+		CVector GetPlayerAimPos(void);
 		CVehicle * GetVehicleStandingOn(void);
 		CObject * GetObjectStandingOn(void);
 

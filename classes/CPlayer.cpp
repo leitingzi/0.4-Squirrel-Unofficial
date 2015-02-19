@@ -18,6 +18,8 @@
    THE SOFTWARE.
 */
 
+#include "../structures/CRGB.h"
+#include "../structures/CVector.h"
 #include "../Main.h"
 #include "CPlayer.h"
 
@@ -31,7 +33,7 @@ void CPlayer::SetName(const SQChar * pszNewName) {
 }
 
 void CPlayer::SetPosition(CVector * pPos) {
-	// TODO
+	g_pCore->F()->SetPlayerPos(m_nPlayerId, pPos->GetX(), pPos->GetY(), pPos->GetZ());
 }
 
 void CPlayer::SetHealth(float fHealth) {
@@ -59,7 +61,7 @@ void CPlayer::SetSkin(int nSkin) {
 }
 
 void CPlayer::SetColour(CRGB * pColour) {
-	// TODO
+	g_pCore->F()->SetPlayerColour(m_nPlayerId, pColour->ToInt());
 }
 
 void CPlayer::SetMoney(int nMoney) {
@@ -99,7 +101,7 @@ void CPlayer::SetWeaponAmmo(int nWeaponAmmo) {
 }
 
 void CPlayer::SetSpeed(CVector * pSpeed) {
-	// TODO
+	g_pCore->F()->SetPlayerSpeed(m_nPlayerId, pSpeed->GetX(), pSpeed->GetY(), pSpeed->GetZ());
 }
 
 void CPlayer::SetWantedLevel(int nWantedLevel) {
@@ -107,7 +109,10 @@ void CPlayer::SetWantedLevel(int nWantedLevel) {
 }
 
 void CPlayer::SetCameraPos(CVector * pCamPos, CVector * pLookPos) {
-	// TODO
+	g_pCore->F()->SetCameraPosition(m_nPlayerId,
+		pCamPos->GetX(), pCamPos->GetY(), pCamPos->GetZ(),
+		pLookPos->GetX(), pLookPos->GetY(), pLookPos->GetZ()
+	);
 }
 
 void CPlayer::LegacySetAnim(int nAnim) {
@@ -183,9 +188,9 @@ const SQChar * CPlayer::GetName(void) {
 	return m_szPlayerName;
 }
 
-CVector * CPlayer::GetPosition(void) {
+CVector CPlayer::GetPosition(void) {
 	// TODO
-	return NULL;
+	return CVector();
 }
 
 float CPlayer::GetHealth(void) {
@@ -212,9 +217,9 @@ int CPlayer::GetSkin(void) {
 	return g_pCore->F()->GetPlayerSkin(m_nPlayerId);
 }
 
-CRGB * CPlayer::GetColour(void) {
+CRGB CPlayer::GetColour(void) {
 	// TODO
-	return NULL;
+	return CRGB();
 }
 
 int CPlayer::GetMoney(void) {
@@ -256,9 +261,9 @@ int CPlayer::GetWeaponAmmo(void) {
 	return g_pCore->F()->GetPlayerWeaponAmmo(m_nPlayerId);
 }
 
-CVector * CPlayer::GetSpeed(void) {
+CVector CPlayer::GetSpeed(void) {
 	// TODO
-	return NULL;
+	return CVector();
 }
 
 bool CPlayer::GetAdmin(void) {
@@ -355,14 +360,18 @@ int CPlayer::GetPlayerGameKeys(void) {
 	return g_pCore->F()->GetPlayerGameKeys(m_nPlayerId);
 }
 
-CVector * CPlayer::GetPlayerAimDir(void) {
-	// TODO
-	return NULL;
+CVector CPlayer::GetPlayerAimDir(void) {
+	float x, y, z;
+	g_pCore->F()->GetPlayerAimDir(m_nPlayerId, &x, &y, &z);
+
+	return CVector(x, y, z);
 }
 
-CVector * CPlayer::GetPlayerAimPos(void) {
-	// TODO
-	return NULL;
+CVector CPlayer::GetPlayerAimPos(void) {
+	float x, y, z;
+	g_pCore->F()->GetPlayerAimPos(m_nPlayerId, &x, &y, &z);
+
+	return CVector(x, y, z);
 }
 
 CVehicle * CPlayer::GetVehicleStandingOn(void) {
@@ -441,5 +450,5 @@ void CPlayer::GiveMoney(int nMoney) {
 }
 
 void CPlayer::AddSpeed(CVector * pSpeed) {
-	// TODO
+	g_pCore->F()->AddPlayerSpeed(m_nPlayerId, pSpeed->GetX(), pSpeed->GetY(), pSpeed->GetZ());
 }
