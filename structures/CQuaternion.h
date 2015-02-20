@@ -19,8 +19,6 @@
 */
 
 #pragma once
-#pragma warning( disable : 4244 )
-
 #include <sqrat.h>
 #include "IRefreshableStructure.h"
 #include "../Main.h"
