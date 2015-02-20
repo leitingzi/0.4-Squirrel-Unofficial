@@ -19,3 +19,30 @@
 */
 
 #pragma once
+#include <squirrel.h>
+#include "IEntity.h"
+
+class CObject : public IEntity
+{
+	public:
+		CObject(int nObjectId, bool bIsScriptEntity) {
+			m_nObjectId = nObjectId;
+			m_bIsScriptEntity = bIsScriptEntity;
+		}
+
+		CObject() {
+			m_nObjectId = -1;
+			m_bIsScriptEntity = false;
+		}
+
+		int GetID(void) { return m_nObjectId; }
+		void Delete(void);
+		bool IsScriptEntity(void) { return m_bIsScriptEntity; }
+
+	public:
+
+
+	private:
+		int m_nObjectId;
+		bool m_bIsScriptEntity;
+};
