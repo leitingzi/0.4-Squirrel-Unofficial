@@ -81,13 +81,13 @@ class CEntityPool
 			return Sqrat::WeakPtr<T*>(pEntity);
 		}
 
-		bool New(int nEntityId) {
+		bool New(int nEntityId, bool bIsScriptEntity = true) {
 			uint32_t uiFreeSlot = GetNextFreeSlot();
 			if (uiFreeSlot == -1) {
 				return false;
 			}
 
-			T* pEntity = new T(nEntityId);
+			T* pEntity = new T(nEntityId, bIsScriptEntity);
 			m_pEntities[uiFreeSlot] = new Sqrat::SharedPtr<T>(pEntity);
 
 			return true;

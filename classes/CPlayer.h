@@ -30,7 +30,7 @@ class CVehicle;
 class CPlayer : public IEntity
 {
 	public:
-		CPlayer(int nPlayerId) {
+		CPlayer(int nPlayerId, bool bDummy) {
 			m_nPlayerId = nPlayerId;
 		}
 

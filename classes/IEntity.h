@@ -26,4 +26,7 @@ class IEntity
 		virtual int GetID(void) = 0;
 		virtual void Delete(void) = 0;
 		virtual bool IsScriptEntity(void) = 0;
+
+		// The constructor is assumed to take on the form IEntity(nEntityId, bIsScriptEntity)
+		// A default constructor is also required
 };
