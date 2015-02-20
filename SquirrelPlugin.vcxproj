@@ -27,26 +27,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -152,6 +152,7 @@
     <ClInclude Include="CCallbackHandler.h" />
     <ClInclude Include="CConsole.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CEntityPool.h" />
     <ClInclude Include="classes\IEntity.h" />
     <ClInclude Include="classes\CObject.h" />
     <ClInclude Include="classes\CPickup.h" />
@@ -178,17 +179,19 @@
     <ClInclude Include="SSquirrelFunction.h" />
     <ClInclude Include="structures\CARGB.h" />
     <ClInclude Include="structures\CBounds.h" />
-    <ClInclude Include="structures\CEntityProperty.h" />
     <ClInclude Include="structures\CQuaternion.h" />
     <ClInclude Include="structures\CRGB.h" />
     <ClInclude Include="structures\CRGBA.h" />
     <ClInclude Include="structures\CVector.h" />
     <ClInclude Include="structures\CWastedSettings.h" />
+    <ClInclude Include="structures\IRefreshableStructure.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCallbackHandler.cpp" />
     <ClCompile Include="CConsole.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="classes\CPickup.cpp" />
+    <ClCompile Include="classes\CPlayer.cpp" />
     <ClCompile Include="CScript.cpp" />
     <ClCompile Include="CScriptEvents.cpp" />
     <ClCompile Include="CSQIO.cpp" />
