@@ -90,9 +90,6 @@
     <ClInclude Include="classes\CTextdraw.h">
       <Filter>Header Files\classes</Filter>
     </ClInclude>
-    <ClInclude Include="structures\CEntityProperty.h">
-      <Filter>Header Files\structures</Filter>
-    </ClInclude>
     <ClInclude Include="structures\CVector.h">
       <Filter>Header Files\structures</Filter>
     </ClInclude>
@@ -138,6 +135,12 @@
     <ClInclude Include="classes\IEntity.h">
       <Filter>Header Files\classes</Filter>
     </ClInclude>
+    <ClInclude Include="structures\IRefreshableStructure.h">
+      <Filter>Header Files\structures</Filter>
+    </ClInclude>
+    <ClInclude Include="CEntityPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -181,6 +184,12 @@
     </ClCompile>
     <ClCompile Include="functions\CWorldFunctions.cpp">
       <Filter>Source Files\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\CPlayer.cpp">
+      <Filter>Source Files\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\CPickup.cpp">
+      <Filter>Source Files\classes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
