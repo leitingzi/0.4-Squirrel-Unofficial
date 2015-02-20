@@ -80,13 +80,13 @@ class CEntityPool
 			return Sqrat::WeakPtr<T*>(pEntity);
 		}
 
-		bool New(T* pEntity) {
+		bool New(int nEntityId) {
 			uint32_t uiFreeSlot = GetNextFreeSlot();
 			if (uiFreeSlot == -1) {
 				return false;
 			}
 
-			m_pEntities[i] = new T();
+			m_pEntities[i] = new T(nEntityId);
 			return true;
 		}
 
