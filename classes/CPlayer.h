@@ -34,6 +34,10 @@ class CPlayer : public IEntity
 			m_nPlayerId = nPlayerId;
 		}
 
+		CPlayer() {
+			m_nPlayerId = -1;
+		}
+
 		int GetID(void) { return m_nPlayerId; }
 		void Delete(void);
 
