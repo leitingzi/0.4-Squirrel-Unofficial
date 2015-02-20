@@ -23,7 +23,8 @@
 #include "SSquirrelFunction.h"
 #include "Main.h"
 
-#define DEFINE_EVENT(x) SLListNode<SSquirrelFunction> * x = NULL
+#define DEFINE_EVENT(x) SLListNode<SSquirrelFunction> * x
+#define INIT_EVENT(x) x = NULL
 
 // This struct consists of a series of SLListNodes to store linked lists of
 // SSquirrelFunctions. This allows scripts to subscribe multiple functions to
@@ -36,11 +37,70 @@
 // for CCallbackHandler, and that something in CCallbackHandler is making use of it.
 //
 // Basically the flow for adding a script event is:
-//     1. Declare here.
+//     1. Declare and init here.
 //     2. Add to CScript::DestroyEvents
 //     3. Implement in CScriptEvents
 //     4. Make sure something in CCallbackHandler actually calls the new event
 struct SScriptEvents {
+	SScriptEvents() {
+		INIT_EVENT(onServerStart);
+		INIT_EVENT(onServerStop);
+
+		INIT_EVENT(onScriptLoad);
+		INIT_EVENT(onScriptUnload);
+
+		INIT_EVENT(onPlayerJoin);
+		INIT_EVENT(onPlayerPart);
+		INIT_EVENT(onPlayerCrashDump);
+		INIT_EVENT(onLoginAttempt);
+
+		INIT_EVENT(onPlayerRequestClass);
+		INIT_EVENT(onPlayerRequestSpawn);
+		INIT_EVENT(onPlayerSpawn);
+
+		INIT_EVENT(onPlayerDeath);
+		INIT_EVENT(onPlayerKill);
+		INIT_EVENT(onPlayerTeamKill);
+
+		INIT_EVENT(onPlayerEnteringVehicle);
+		INIT_EVENT(onPlayerEnterVehicle);
+		INIT_EVENT(onPlayerExitVehicle);
+
+		INIT_EVENT(onPlayerChat);
+		INIT_EVENT(onPlayerCommand);
+		INIT_EVENT(onPlayerPM);
+		INIT_EVENT(onPlayerBeginTyping);
+		INIT_EVENT(onPlayerEndTyping);
+		INIT_EVENT(onPlayerAwayChange);
+
+		INIT_EVENT(onPlayerMove);
+		INIT_EVENT(onPlayerHealthChange);
+		INIT_EVENT(onPlayerArmourChange);
+		INIT_EVENT(onPlayerWeaponChange);
+		INIT_EVENT(onPlayerActionChange);
+		INIT_EVENT(onPlayerStateChange);
+		INIT_EVENT(onPlayerOnFireChange);
+		INIT_EVENT(onPlayerCrouchChange);
+		INIT_EVENT(onPlayerGameKeysChange);
+
+		INIT_EVENT(onPickupClaimPicked);
+		INIT_EVENT(onPickupPickedUp);
+		INIT_EVENT(onPickupRespawn);
+
+		INIT_EVENT(onVehicleExplode);
+		INIT_EVENT(onVehicleRespawn);
+		INIT_EVENT(onVehicleHealthChange);
+		INIT_EVENT(onVehicleMove);
+
+		INIT_EVENT(onObjectShot);
+		INIT_EVENT(onObjectBump);
+
+		INIT_EVENT(onKeyDown);
+		INIT_EVENT(onKeyUp);
+
+		INIT_EVENT(onTimeChange);
+	}
+
 	DEFINE_EVENT(onServerStart);
 	DEFINE_EVENT(onServerStop);
 
