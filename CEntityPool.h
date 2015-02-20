@@ -108,7 +108,11 @@ class CEntityPool
 
 				delete m_pEntities[uiSlot];
 				m_pEntities[uiSlot] = NULL;
+
+				return true;
 			}
+
+			return false;
 		}
 
 		bool Remove(T* pEntity) {
