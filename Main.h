@@ -48,12 +48,5 @@ using namespace Sqrat;
 #define _SQ( x ) SQInteger x( HSQUIRRELVM v )
 #define PLUGIN_INIT extern "C" PLUGIN_EXPORT unsigned int
 
-#define	MAX_PLAYERS    100
-#define MAX_VEHICLES   1000
-#define MAX_OBJECTS    3000
-#define MAX_PICKUPS    2000
-#define MAX_SPRITES    128
-#define MAX_TEXTDRAWS  256
-
 // Declared in the main header to be accessible to all code in this module.
 extern CCore * g_pCore;

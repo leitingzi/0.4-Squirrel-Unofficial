@@ -20,9 +20,19 @@
 
 #pragma once
 #include "CCallbackHandler.h"
+#include "CEntityPool.h"
+#include "classes/CPlayer.h"
 #include "plugin.h"
+
 #include <squirrel.h>
 #include <unordered_map>
+
+#define MAX_PLAYERS    100
+#define MAX_VEHICLES   1000
+#define MAX_OBJECTS    3000
+#define MAX_PICKUPS    2000
+#define MAX_SPRITES    128
+#define MAX_TEXTDRAWS  256
 
 class CScript;
 
@@ -30,16 +40,9 @@ class CCore
 {
 	public:
 		typedef std::unordered_map<const SQChar *, CScript *>::iterator ScriptIterator;
+		typedef CEntityPool<CPlayer, MAX_PLAYERS> PlayerPool;
 
-		CCore(PluginFuncs* functions, PluginCallbacks* callbacks, PluginInfo* info) {
-			m_pSDKFuncs = functions;
-			m_pSDKCalls = callbacks;
-			m_pSDKInfo = info;
-
-			CCallbackHandler::Register(callbacks);
-			ParseConfig();
-		}
-
+		CCore(PluginFuncs* functions, PluginCallbacks* callbacks, PluginInfo* info);
 		~CCore();
 		
 		bool CanReload() { return this->m_bCanReload; }
@@ -64,6 +67,8 @@ class CCore
 		// Abbreviation for "Get(I)nfo"
 		PluginInfo * I() { return m_pSDKInfo; }
 
+		PlayerPool* GetPlayerPool() { return m_pPlayerPool; }
+
 	private:
 		bool ParseConfigLine(const char * szLine);
 		CScript * SpawnScript(const SQChar * szScriptName);
@@ -74,4 +79,6 @@ class CCore
 		PluginFuncs * m_pSDKFuncs;
 		PluginCallbacks * m_pSDKCalls;
 		PluginInfo * m_pSDKInfo;
+
+		PlayerPool* m_pPlayerPool;
 };

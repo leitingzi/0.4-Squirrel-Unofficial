@@ -23,9 +23,22 @@
 #include "CScript.h"
 #include "CSQIO.h"
 
+CCore::CCore(PluginFuncs* functions, PluginCallbacks* callbacks, PluginInfo* info) {
+	m_pSDKFuncs = functions;
+	m_pSDKCalls = callbacks;
+	m_pSDKInfo = info;
+
+	m_pPlayerPool = new PlayerPool();
+
+	CCallbackHandler::Register(callbacks);
+	ParseConfig();
+}
+
 CCore::~CCore() {
 	CSQIO::shutdown();
 	this->DestroyScripts();
+
+	delete m_pPlayerPool;
 }
 
 void CCore::DestroyScripts() {
@@ -111,7 +124,7 @@ bool CCore::ParseConfigLine(const char * szLine) {
 	}
 }
 
-CScript * CCore::SpawnScript(const char * szScriptName) {
+CScript * CCore::SpawnScript(const SQChar * szScriptName) {
 	CScript * pScript = new CScript(szScriptName);
 	return pScript;
 }
