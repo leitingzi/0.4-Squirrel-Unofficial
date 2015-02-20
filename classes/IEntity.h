@@ -25,4 +25,5 @@ class IEntity
 		virtual ~IEntity() { }
 		virtual int GetID(void) = 0;
 		virtual void Delete(void) = 0;
+		virtual bool IsScriptEntity(void) = 0;
 };

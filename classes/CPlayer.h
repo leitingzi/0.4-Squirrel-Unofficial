@@ -40,6 +40,7 @@ class CPlayer : public IEntity
 
 		int GetID(void) { return m_nPlayerId; }
 		void Delete(void);
+		bool IsScriptEntity(void) { return false; }
 
 	public:
 		static void Register(HSQUIRRELVM v);
