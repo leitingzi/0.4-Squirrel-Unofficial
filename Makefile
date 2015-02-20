@@ -3,7 +3,7 @@ DIRS    := .
 EXT     := cpp
 PROJNAME := squirrel04
 
-INCDIRS = -I. -I./squirrel/include
+INCDIRS = -I. -I./squirrel/include -I./sqrat
 LIBDIRS = -L./squirrel/lib
 
 STCLIBS = -lsquirrel$(BITCOUNT) -lsqstdlib$(BITCOUNT)
