@@ -23,11 +23,12 @@
 #include <sqrat.h>
 #include <stdint.h>
 
+// If T does not implement IEntity, this will fail!
 template<typename T, const uint32_t MAX_ENTITIES>
 class CEntityPool
 {
 	private:
-		Sqrat::SharedPtr<T*> m_pEntities[MAX_ENTITIES];
+		Sqrat::SharedPtr<T>* m_pEntities[MAX_ENTITIES];
 		uint32_t GetNextFreeSlot(void) {
 			for (uint32_t i = 0; i < MAX_ENTITIES; i++) {
 				if (m_pEntities[i] != NULL) {
@@ -86,7 +87,9 @@ class CEntityPool
 				return false;
 			}
 
-			m_pEntities[i] = new T(nEntityId);
+			T* pEntity = new T(nEntityId);
+			m_pEntities[uiFreeSlot] = new Sqrat::SharedPtr<T>(pEntity);
+
 			return true;
 		}
 
@@ -101,7 +104,7 @@ class CEntityPool
 
 		bool Delete(unsigned int uiSlot) {
 			if (m_pEntites[uiSlot] != NULL) {
-				m_pEntities[uiSlot].Delete();
+				m_pEntities[uiSlot]->Delete();
 
 				delete m_pEntities[uiSlot];
 				m_pEntities[uiSlot] = NULL;
