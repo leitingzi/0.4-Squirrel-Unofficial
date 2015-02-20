@@ -124,6 +124,10 @@ class CEntityPool
 			if (m_pEntites[uiSlot] != NULL) {
 				delete m_pEntities[uiSlot];
 				m_pEntities[uiSlot] = NULL;
+
+				return true;
 			}
+
+			return false;
 		}
 };
