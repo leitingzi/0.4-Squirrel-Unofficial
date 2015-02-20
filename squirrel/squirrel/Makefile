@@ -1,7 +1,7 @@
 SQUIRREL= ..
 
 
-OUT= $(SQUIRREL)/lib/libsquirrel.a
+OUT= $(SQUIRREL)/lib/libsquirrel$(BITCOUNT).a
 INCZ= -I$(SQUIRREL)/include -I. -Iinclude
 DEFS= 
 LIB=	
@@ -37,16 +37,19 @@ SRCS= \
 	
 	
 sq32:
+	$(eval BITCOUNT:=32)
 	gcc -O2 -fno-exceptions -fno-rtti -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ) $(DEFS)
 	ar rc $(OUT) *.o
 	rm *.o
 
 sqprof:
+	$(eval BITCOUNT:=32)
 	gcc -O2 -pg -fno-exceptions -fno-rtti -pie -gstabs -g3 -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ) $(DEFS)
 	ar rc $(OUT) *.o
 	rm *.o
 
 sq64:
+	$(eval BITCOUNT:=64)
 	gcc -O2 -m64 -D_SQ64 -fno-exceptions -fno-rtti -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ) $(DEFS)
 	ar rc $(OUT) *.o
 	rm *.o
