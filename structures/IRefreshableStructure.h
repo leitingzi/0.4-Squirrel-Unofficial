@@ -25,8 +25,9 @@ template<typename T>
 class IRefreshableStructure
 {
 	public:
+		IRefreshableStructure() : m_pCallback(NULL) { }
 		typedef void (*StructureSetCallback)(T* pQuat);
-		StructureSetCallback* m_pCallback = NULL;
+		StructureSetCallback* m_pCallback;
 
 		void SetCallback(StructureSetCallback* pCallback) {
 			m_pCallback = pCallback;
