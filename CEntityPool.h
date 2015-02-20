@@ -103,7 +103,7 @@ class CEntityPool
 		}
 
 		bool Delete(unsigned int uiSlot) {
-			if (m_pEntites[uiSlot] != NULL) {
+			if (m_pEntities[uiSlot] != NULL) {
 				m_pEntities[uiSlot]->Delete();
 
 				delete m_pEntities[uiSlot];
@@ -125,7 +125,7 @@ class CEntityPool
 		}
 
 		bool Remove(unsigned int uiSlot) {
-			if (m_pEntites[uiSlot] != NULL) {
+			if (m_pEntities[uiSlot] != NULL) {
 				delete m_pEntities[uiSlot];
 				m_pEntities[uiSlot] = NULL;
 
@@ -133,5 +133,13 @@ class CEntityPool
 			}
 
 			return false;
+		}
+
+		void RemoveAllScriptEntities(void) {
+			for (uint32_t i = 0; i < MAX_ENTITIES; i++) {
+				if (m_pEntities[i] != NULL && m_pEntities[i]->IsScriptEntity()) {
+					Delete(i);
+				}
+			}
 		}
 };
