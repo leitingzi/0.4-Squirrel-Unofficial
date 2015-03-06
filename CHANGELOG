@@ -14,6 +14,11 @@ v4.0.0
         identical to Player.SetWeapon(Player.Weapon, Amount)
 
     Bugfixes
+      - Fixed timers crashing when using class instances.
+      - Whenever an entity (such as a player or pickup) is removed from
+        the server, all references to that entity, including those used in
+        timers, will now become null to prevent crashes.
+      - Updated and improved core to improve stability of the plugin.
 
     Removed features
       - CreateRadioStream no longer allows specifying an ID. The plugin will
