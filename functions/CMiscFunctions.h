@@ -44,7 +44,7 @@ class CMiscFunctions
 		static SQInteger ReloadScripts(HSQUIRRELVM v);
 		static SQInteger AddEvent(HSQUIRRELVM v);
 		static SQInteger RemoveEvent(HSQUIRRELVM v);
-		// static SQInteger NewTimer(HSQUIRRELVM v);
+		static SQInteger NewTimer(HSQUIRRELVM v);
 
 		static int GetVehicleModelFromName(SQChar * pszName);
 		static const SQChar * GetVehicleNameFromModel(int nModel);
