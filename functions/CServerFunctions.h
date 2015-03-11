@@ -42,24 +42,23 @@ class CServerFunctions
 
 		static void SetServerName(const SQChar * pszName);
 		static void SetMaxPlayers(int nMaxPlayers);
-		static void SetPassword(const SQChar * pszPassword);
+		static void SetPassword(SQChar * pszPassword);
 		static void SetGameModeName(const SQChar * pszName);
 		static void SetKillDelay(int nDelay);
+		static void SetUseClasses(bool bEnabled);
 
 		static const SQChar * GetServerName(void);
 		static const SQChar * GetPassword(void);
 		static const SQChar * GetGameModeName(void);
 		static int GetMaxPlayers(void);
 		static int GetKillDelay(void);
-
-		static void SetUseClasses(bool bEnabled);
 		static bool GetUseClasses(void);
 
 		static void SetSpawnPlayerPos(CVector * pPos);
 		static void SetSpawnCameraPos(CVector * pPos);
 		static void SetSpawnCameraLook(CVector * pPos);
 
-		static void BanIP(const SQChar * pszIP);
-		static void UnbanIP(const SQChar * pszIP);
-		static bool IsIPBanned(const SQChar * pszIP);
+		static void BanIP(SQChar * pszIP);
+		static void UnbanIP(SQChar * pszIP);
+		static bool IsIPBanned(SQChar * pszIP);
 };
