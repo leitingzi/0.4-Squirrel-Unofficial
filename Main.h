@@ -50,5 +50,8 @@ using namespace Sqrat;
 #define _SQ( x ) SQInteger x( HSQUIRRELVM v )
 #define PLUGIN_INIT extern "C" PLUGIN_EXPORT unsigned int
 
+// VECTOR EXpansion
+#define VECTOREX(x) x->GetX(), x->GetY(), x->GetZ()
+
 // Declared in the main header to be accessible to all code in this module.
 extern CCore * g_pCore;

@@ -52,23 +52,27 @@ class CWorldFunctions
 		static float GetMaxHeight(void);
 		
 		static void CreateExplosion(int nWorld, int nType, CVector * pPos, int nPlayerBlamed, bool bOnGround);
-		static void PlayGameSound(CPlayer * pPlayer, int nSound, CVector * pPos);
+		static void PlayGameSound(int nWorld, int nSound, CVector * pPos);
 
 		static void SetWorldBounds(float fMaxX, float fMinX, float fMaxY, float fMinY);
+		static void SetWorldBounds(CBounds sBounds);
 		static CBounds GetWorldBounds(void);
 
 		static void SetWastedSettings(int nDeathTime, int nFadeTime, float fFadeInSpeed, float fFadeOutSpeed, CRGB colour, int nCorpseFadeDelay, int nCorpseFadeTime);
+		static void SetWastedSettings(CWastedSettings sSettings);
 		static CWastedSettings GetWastedSettings(void);
 
 		static void RawHideMapObject(int nModelId, int x, int y, int z);
+		static void RawShowMapObject(int nModelId, int x, int y, int z);
+
 		static void HideMapObject(int nModelId, CVector * pPos);
 		static void ShowMapObject(int nModelId, CVector * pPos);
 		static void ShowAllMapObjects(void);
 
-		static bool SetWeaponDataValue(int nWeaponId, int nFieldId, double dValue);
+		static int SetWeaponDataValue(int nWeaponId, int nFieldId, double dValue);
 		static double GetWeaponDataValue(int nWeaponId, int nFieldId);
-		static bool ResetWeaponDataValue(int nWeaponId, int nFieldId);
+		static int ResetWeaponDataValue(int nWeaponId, int nFieldId);
 		static bool IsWeaponDataModified(int nWeaponId, int nFieldId);
-		static bool ResetWeaponData(int nWeaponId);
-		static bool ResetAllWeaponData(void);
+		static int ResetWeaponData(int nWeaponId);
+		static int ResetAllWeaponData(void);
 };

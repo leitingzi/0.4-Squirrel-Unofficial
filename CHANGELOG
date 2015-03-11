@@ -3,6 +3,7 @@ v4.0.0
       - Ability to run multiple scripts on the same server.
       - New interface for events that allows multiple functions to
         subscribe to one event.
+      - Added RawShowMapObject.
 
     Feature changes
       - UsingClasses renamed to GetUseClasses for consistency. UsingClasses
@@ -12,6 +13,11 @@ v4.0.0
         will automatically give the player that weapon with 5000 ammo.
       - Player.Ammo can now be set using Player.Ammo = Amount, which is
         identical to Player.SetWeapon(Player.Weapon, Amount)
+      - SetWastedSettings and SetWorldBounds can now accept WastedSettings
+        and WorldBounds instances, respectively.
+      - SetWeaponDataValue, ResetWeaponDataValue, ResetAllWeaponData and
+        ResetWeaponData now return ints instead of bools in order to match
+        the plugin SDK.
 
     Bugfixes
       - Fixed timers crashing when using class instances.

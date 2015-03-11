@@ -155,15 +155,15 @@ bool CServerFunctions::GetUseClasses(void) {
 }
 
 void CServerFunctions::SetSpawnPlayerPos(CVector * pPos) {
-	g_pCore->F()->SetSpawnPlayerPos(pPos->GetX(), pPos->GetY(), pPos->GetZ());
+	g_pCore->F()->SetSpawnPlayerPos(VECTOREX(pPos));
 }
 
 void CServerFunctions::SetSpawnCameraPos(CVector * pPos) {
-	g_pCore->F()->SetSpawnCameraPos(pPos->GetX(), pPos->GetY(), pPos->GetZ());
+	g_pCore->F()->SetSpawnCameraPos(VECTOREX(pPos));
 }
 
 void CServerFunctions::SetSpawnCameraLook(CVector * pPos) {
-	g_pCore->F()->SetSpawnCameraLookAt(pPos->GetX(), pPos->GetY(), pPos->GetZ());
+	g_pCore->F()->SetSpawnCameraLookAt(VECTOREX(pPos));
 }
 
 void CServerFunctions::BanIP(SQChar * pszIP) {
