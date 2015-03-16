@@ -19,3 +19,32 @@
 */
 
 #pragma once
+#include <squirrel.h>
+#include "../structures/CQuaternion.h"
+#include "../structures/CVector.h"
+#include "IEntity.h"
+
+class CTextdraw : public IEntity
+{
+	public:
+		CTextdraw(int nTextdrawId, bool bIsScriptEntity) {
+			m_nTextdrawId = nTextdrawId;
+			m_bIsScriptEntity = bIsScriptEntity;
+		}
+
+		CTextdraw() {
+			m_nTextdrawId = -1;
+			m_bIsScriptEntity = false;
+		}
+
+		int GetID(void) { return m_nTextdrawId; }
+		void Delete(void);
+		bool IsScriptEntity(void) { return m_bIsScriptEntity; }
+
+	public:
+		static void Register(HSQUIRRELVM v);
+
+	private:
+		int m_nTextdrawId;
+		bool m_bIsScriptEntity;
+};

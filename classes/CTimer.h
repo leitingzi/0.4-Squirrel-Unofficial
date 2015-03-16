@@ -19,3 +19,32 @@
 */
 
 #pragma once
+#include <squirrel.h>
+#include "../structures/CQuaternion.h"
+#include "../structures/CVector.h"
+#include "IEntity.h"
+
+class CTimer : public IEntity
+{
+	public:
+		CTimer(int nTimerId, bool bIsScriptEntity) {
+			m_nTimerId = nTimerId;
+			m_bIsScriptEntity = bIsScriptEntity;
+		}
+
+		CTimer() {
+			m_nTimerId = -1;
+			m_bIsScriptEntity = false;
+		}
+
+		int GetID(void) { return m_nTimerId; }
+		void Delete(void);
+		bool IsScriptEntity(void) { return m_bIsScriptEntity; }
+
+	public:
+		static void Register(HSQUIRRELVM v);
+
+	private:
+		int m_nTimerId;
+		bool m_bIsScriptEntity;
+};
