@@ -4,6 +4,7 @@ v4.0.0
       - New interface for events that allows multiple functions to
         subscribe to one event.
       - Added RawShowMapObject.
+      - Pickup.Automatic has a new alias, Pickup.IsAutomatic.
 
     Feature changes
       - UsingClasses renamed to GetUseClasses for consistency. UsingClasses

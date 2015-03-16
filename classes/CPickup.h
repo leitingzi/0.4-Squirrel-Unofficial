@@ -46,7 +46,7 @@ class CPickup : public IEntity
 		void SetAlpha(int nAlpha);
 		void SetAuto(bool bHasAutoReward);
 		void SetAutoTimer(int nRewardTime);
-		void SetPos(CVector vecPos);
+		void SetPos(CVector * vecPos);
 
 		int GetWorld(void);
 		int GetAlpha(void);
