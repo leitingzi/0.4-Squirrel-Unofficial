@@ -25,7 +25,46 @@
 #include "CWorldFunctions.h"
 
 void CWorldFunctions::Register(HSQUIRRELVM v) {
+	Sqrat::RootTable(v)
+		.Func(_SC("SetTimeRate"), SetTimeRate)
+		.Func(_SC("SetHour"), SetHour)
+		.Func(_SC("SetMinute"), SetMinute)
+		.Func(_SC("SetTime"), SetTime)
+		.Func(_SC("SetWeather"), SetWeather)
+		.Func(_SC("SetGravity"), SetGravity)
+		.Func(_SC("SetGamespeed"), SetGamespeed)
+		.Func(_SC("SetWaterLevel"), SetWaterLevel)
+		.Func(_SC("SetMaxHeight"), SetMaxHeight)
 
+		.Func(_SC("GetTimeRate"), GetTimeRate)
+		.Func(_SC("GetHour"), GetHour)
+		.Func(_SC("GetMinute"), GetMinute)
+		.Func(_SC("GetWeather"), GetWeather)
+		.Func(_SC("GetGravity"), GetGravity)
+		.Func(_SC("GetGamespeed"), GetGamespeed)
+		.Func(_SC("GetWaterLevel"), GetWaterLevel)
+		.Func(_SC("GetMaxHeight"), GetMaxHeight)
+
+		.Func(_SC("CreateExplosion"), CreateExplosion)
+		.Func(_SC("PlaySound"), PlayGameSound)
+
+		.Overload(_SC("SetWorldBounds"), SetWorldBounds)
+		.Overload(_SC("SetWorldBounds"), SetWorldBoundsWithInstance)
+		.Func(_SC("GetWorldBounds"), GetWorldBounds)
+
+		.Func(_SC("RawHideMapObject"), RawHideMapObject)
+		.Func(_SC("RawShowMapObject"), RawShowMapObject)
+
+		.Func(_SC("HideMapObject"), HideMapObject)
+		.Func(_SC("ShowMapObject"), ShowMapObject)
+		.Func(_SC("ShowAllMapObjects"), ShowAllMapObjects)
+
+		.Func(_SC("SetWeaponDataValue"), SetWeaponDataValue)
+		.Func(_SC("GetWeaponDataValue"), GetWeaponDataValue)
+		.Func(_SC("ResetWeaponDataValue"), ResetWeaponDataValue)
+		.Func(_SC("IsWeaponDataModified"), IsWeaponDataModified)
+		.Func(_SC("ResetWeaponData"), ResetWeaponData)
+		.Func(_SC("ResetAllWeaponData"), ResetAllWeaponData);
 }
 
 void CWorldFunctions::SetTimeRate(unsigned int nTimeRate) {
@@ -110,7 +149,7 @@ void CWorldFunctions::SetWorldBounds(float fMaxX, float fMinX, float fMaxY, floa
 	g_pCore->F()->SetWorldBounds(fMaxX, fMinX, fMaxY, fMinY);
 }
 
-void CWorldFunctions::SetWorldBounds(CBounds sBounds) {
+void CWorldFunctions::SetWorldBoundsWithInstance(CBounds sBounds) {
 	SetWorldBounds(sBounds.maxX, sBounds.minX, sBounds.maxY, sBounds.minY);
 }
 
@@ -126,7 +165,7 @@ CBounds CWorldFunctions::GetWorldBounds(void) {
 
 }
 
-void CWorldFunctions::SetWastedSettings(CWastedSettings sSettings) {
+void CWorldFunctions::SetWastedSettingsWithInstance(CWastedSettings sSettings) {
 
 }
 

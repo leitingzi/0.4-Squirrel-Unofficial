@@ -55,11 +55,11 @@ class CWorldFunctions
 		static void PlayGameSound(int nWorld, int nSound, CVector * pPos);
 
 		static void SetWorldBounds(float fMaxX, float fMinX, float fMaxY, float fMinY);
-		static void SetWorldBounds(CBounds sBounds);
+		static void SetWorldBoundsWithInstance(CBounds sBounds);
 		static CBounds GetWorldBounds(void);
 
 		static void SetWastedSettings(int nDeathTime, int nFadeTime, float fFadeInSpeed, float fFadeOutSpeed, CRGB colour, int nCorpseFadeDelay, int nCorpseFadeTime);
-		static void SetWastedSettings(CWastedSettings sSettings);
+		static void SetWastedSettingsWithInstance(CWastedSettings sSettings);
 		static CWastedSettings GetWastedSettings(void);
 
 		static void RawHideMapObject(int nModelId, int x, int y, int z);
