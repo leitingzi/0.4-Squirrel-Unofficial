@@ -26,7 +26,14 @@
 class CARGB : IRefreshableStructure<CARGB>
 {
 	public:
-		CARGB( int a, int r, int g, int b ) { this->a = a; this->r = r; this->g = g; this->b = b; }
+		CARGB(int a, int r, int g, int b) { this->a = a; this->r = r; this->g = g; this->b = b; }
+		CARGB(unsigned int ulColour) {
+			this->a = (ulColour >> 24) & 0xFF;
+			this->r = (ulColour >> 16) & 0xFF;
+			this->g = (ulColour >> 8) & 0xFF;
+			this->b = ulColour & 0xFF;
+		}
+
 		CARGB() { this->a = 0; this->r = 0; this->g = 0; this->b = 0; }
 
 		void SetA(int a) { this->a = a; ProcessCallback(this); }

@@ -27,6 +27,12 @@ class CRGB : IRefreshableStructure<CRGB>
 {
 	public:
 		CRGB( int r, int g, int b ) { this->r = r; this->g = g; this->b = b; }
+		CRGB(unsigned int ulColour) {
+			this->r = (ulColour >> 16) & 0xFF;
+			this->g = (ulColour >> 8) & 0xFF;
+			this->b = ulColour & 0xFF;
+		}
+
 		CRGB() { this->r = 0; this->g = 0; this->b = 0; }
 
 		void SetR(int r) { this->r = r; ProcessCallback(this); }
