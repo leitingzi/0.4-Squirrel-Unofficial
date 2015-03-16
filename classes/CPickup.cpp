@@ -24,20 +24,20 @@ void CPickup::Register(HSQUIRRELVM v) {
 	Sqrat::Class<CPickup> c(v, "CPickup");
 
 	c
-		.Prop(_SC("World"), GetWorld, SetWorld)
-		.Prop(_SC("Alpha"), GetAlpha, SetAlpha)
-		.Prop(_SC("Automatic"), GetAuto, SetAuto)
-		.Prop(_SC("IsAutomatic"), GetAuto, SetAuto)
-		.Prop(_SC("RespawnTime"), GetAutoTimer, SetAutoTimer)
-		.Prop(_SC("Pos"), GetPos, SetPos)
+		.Prop(_SC("World"), &CPickup::GetWorld, &CPickup::SetWorld)
+		.Prop(_SC("Alpha"), &CPickup::GetAlpha, &CPickup::SetAlpha)
+		.Prop(_SC("Automatic"), &CPickup::GetAuto, &CPickup::SetAuto)
+		.Prop(_SC("IsAutomatic"), &CPickup::GetAuto, &CPickup::SetAuto)
+		.Prop(_SC("RespawnTime"), &CPickup::GetAutoTimer, &CPickup::SetAutoTimer)
+		.Prop(_SC("Pos"), &CPickup::GetPos, &CPickup::SetPos)
 		
-		.Prop(_SC("Model"), GetModel)
-		.Prop(_SC("Quantity"), GetQuantity)
-		.Prop(_SC("ID"), GetID)
+		.Prop(_SC("Model"), &CPickup::GetModel)
+		.Prop(_SC("Quantity"), &CPickup::GetQuantity)
+		.Prop(_SC("ID"), &CPickup::GetID)
 		
-		.Func(_SC("Remove"), Delete)
-		.Func(_SC("Respawn"), Respawn)
-		.Func(_SC("StreamedToPlayer"), StreamedToPlayer);
+		.Func(_SC("Remove"), &CPickup::Delete)
+		.Func(_SC("Respawn"), &CPickup::Respawn)
+		.Func(_SC("StreamedToPlayer"), &CPickup::StreamedToPlayer);
 
 	Sqrat::RootTable(v).Bind(_SC("CPickup"), c);
 }
