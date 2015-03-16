@@ -189,8 +189,10 @@ const SQChar * CPlayer::GetName(void) {
 }
 
 CVector CPlayer::GetPosition(void) {
-	// TODO
-	return CVector();
+	float x, y, z;
+	g_pCore->F()->GetPlayerPos(m_nPlayerId, &x, &y, &z);
+
+	return CVector(x, y, z);
 }
 
 float CPlayer::GetHealth(void) {
@@ -218,8 +220,8 @@ int CPlayer::GetSkin(void) {
 }
 
 CRGB CPlayer::GetColour(void) {
-	// TODO
-	return CRGB();
+	unsigned int ulColour = g_pCore->F()->GetPlayerColour(m_nPlayerId);
+	return CRGB(ulColour);
 }
 
 int CPlayer::GetMoney(void) {
@@ -262,8 +264,10 @@ int CPlayer::GetWeaponAmmo(void) {
 }
 
 CVector CPlayer::GetSpeed(void) {
-	// TODO
-	return CVector();
+	float x, y, z;
+	g_pCore->F()->GetPlayerSpeed(m_nPlayerId, &x, &y, &z);
+	
+	return CVector(x, y, z);
 }
 
 bool CPlayer::GetAdmin(void) {
