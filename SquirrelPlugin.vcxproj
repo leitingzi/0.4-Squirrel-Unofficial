@@ -190,6 +190,7 @@
     <ClCompile Include="CCallbackHandler.cpp" />
     <ClCompile Include="CConsole.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="classes\CObject.cpp" />
     <ClCompile Include="classes\CPickup.cpp" />
     <ClCompile Include="classes\CPlayer.cpp" />
     <ClCompile Include="CScript.cpp" />

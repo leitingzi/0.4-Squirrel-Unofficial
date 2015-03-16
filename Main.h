@@ -53,5 +53,8 @@ using namespace Sqrat;
 // VECTOR EXpansion
 #define VECTOREX(x) x->GetX(), x->GetY(), x->GetZ()
 
+// QUATernion EXpansion
+#define QUATEX(x) x->GetX(), x->GetY(), x->GetZ(), x->GetW()
+
 // Declared in the main header to be accessible to all code in this module.
 extern CCore * g_pCore;
