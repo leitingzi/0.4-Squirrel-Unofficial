@@ -152,7 +152,7 @@ class CPlayer : public IEntity
 		void LegacySetAnim(int nAnim);
 		void SetAnim(int nAnimGroup, int nAnim);
 		void GiveWeapon(int nWeapon, int nAmmo);
-		void SetWeapon(int nWeapon, int nAmmo);
+		void SetWeaponLegacy(int nWeapon, int nAmmo);
 		void RemoveWeapon(int nWeapon);
 		void SetAlpha(int nAlpha, int nFadeTime);
 		bool Redirect(const SQChar * pszIp, unsigned int usPort, const SQChar * pszNickname, const SQChar * pszSrvPass, const SQChar * pszUserPass);

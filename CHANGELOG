@@ -5,6 +5,7 @@ v4.0.0
         subscribe to one event.
       - Added RawShowMapObject.
       - Pickup.Automatic has a new alias, Pickup.IsAutomatic.
+      - Player.ShowMarkers has a new alias, Player.CanSeeMarkers.
 
     Feature changes
       - UsingClasses renamed to GetUseClasses for consistency. UsingClasses

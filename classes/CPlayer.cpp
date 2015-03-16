@@ -24,7 +24,100 @@
 #include "CPlayer.h"
 
 void CPlayer::Register(HSQUIRRELVM v) {
-	// TODO
+	Sqrat::Class<CPlayer> c(v, "CPlayer");
+
+	c
+		.Prop(_SC("Admin"), GetAdmin, SetAdmin)
+		.Prop(_SC("Angle"), GetHeading, SetHeading)
+		.Prop(_SC("Armor"), GetArmour, SetArmour)
+		.Prop(_SC("Armour"), GetArmour, SetArmour)
+		.Prop(_SC("CanAttack"), GetCanAttack, SetCanAttack)
+		.Prop(_SC("CanDriveby"), GetDrivebyEnabled, SetDrivebyEnabled)
+		.Prop(_SC("CanSeeMarkers"), GetCanSeeMarkers, SetCanSeeMarkers)
+		.Prop(_SC("Cash"), GetMoney, SetMoney)
+		.Prop(_SC("Color"), GetColour, SetColour)
+		.Prop(_SC("Colour"), GetColour, SetColour)
+		// I don't like this next name and might remove it later.
+		.Prop(_SC("DrivebyAbility"), GetDrivebyEnabled, SetDrivebyEnabled)
+		.Prop(_SC("Frozen"), GetFrozen, SetFrozen)
+		.Prop(_SC("GreenScanlines"), GetGreenScanlines, SetGreenScanlines)
+		.Prop(_SC("HasChatTags"), GetCanUseColors, SetCanUseColors)
+		.Prop(_SC("Heading"), GetHeading, SetHeading)
+		.Prop(_SC("Health"), GetHealth, SetHealth)
+		.Prop(_SC("Immunity"), GetImmunity, SetImmunity)
+		.Prop(_SC("IsAdmin"), GetAdmin, SetAdmin)
+		.Prop(_SC("IsDrunk"), GetDrunkStatus, SetDrunkStatus)
+		.Prop(_SC("IsFrozen"), GetFrozen, SetFrozen)
+		.Prop(_SC("IsOnRadar"), GetOnRadar, SetOnRadar)
+		.Prop(_SC("IsWeaponSyncBlocked"), GetCanAttack, SetCanAttack)
+		.Prop(_SC("Name"), GetName, SetName)
+		.Prop(_SC("Pos"), GetPosition, SetPosition)
+		.Prop(_SC("Score"), GetScore, SetScore)
+		.Prop(_SC("SecWorld"), GetSecondaryWorld, SetSecondaryWorld)
+		.Prop(_SC("ShowMarkers"), GetCanSeeMarkers, SetCanSeeMarkers)
+		.Prop(_SC("Skin"), GetSkin, SetSkin)
+		.Prop(_SC("SpectateTarget"), GetSpectateTarget, SetSpectateTarget)
+		.Prop(_SC("Speed"), GetSpeed, SetSpeed)
+		.Prop(_SC("Team"), GetTeam, SetTeam)
+		//.Prop(_SC("Vehicle"), GetVehicle, SetVehicle)
+		.Prop(_SC("Weapon"), GetWeapon, SetWeapon)
+		.Prop(_SC("WeaponAmmo"), GetWeaponAmmo, SetWeaponAmmo)
+		.Prop(_SC("WeaponSlot"), GetWeaponSlot, SetWeaponSlot)
+		.Prop(_SC("WhiteScanlines"), GetWhiteScanlines, SetWhiteScanlines)
+		.Prop(_SC("Widescreen"), GetWidescreen, SetWidescreen)
+		.Prop(_SC("World"), GetWorld, SetWorld)
+
+		.Prop(_SC("Action"), GetPlayerAction)
+		.Prop(_SC("Away"), GetIdleStatus)
+		.Prop(_SC("AimDir"), GetPlayerAimDir)
+		.Prop(_SC("AimPos"), GetPlayerAimPos)
+		.Prop(_SC("Alpha"), GetAlpha)
+		.Prop(_SC("FPS"), GetFPS)
+		.Prop(_SC("GameKeys"), GetPlayerGameKeys)
+		.Prop(_SC("ID"), GetID)
+		.Prop(_SC("IP"), GetIP)
+		.Prop(_SC("IsAway"), GetIdleStatus)
+		.Prop(_SC("IsCrouching"), GetPlayerCrouchStatus)
+		.Prop(_SC("IsOnFire"), GetPlayerOnFireStatus)
+		.Prop(_SC("IsSpawned"), GetSpawned)
+		.Prop(_SC("IsTyping"), GetTypingStatus)
+		.Prop(_SC("Key"), GetKey)
+		.Prop(_SC("Ping"), GetPing)
+		.Prop(_SC("Spawned"), GetSpawned)
+		//.Prop(_SC("StandingOnObject"), GetObjectStandingOn)
+		//.Prop(_SC("StandingOnVehicle"), GetVehicleStandingOn)
+		.Prop(_SC("State"), GetState)
+		.Prop(_SC("Typing"), GetTypingStatus)
+		.Prop(_SC("UniqueID"), GetUniqueID)
+		.Prop(_SC("UniqueWorld"), GetUniqueWorld)
+		.Prop(_SC("VehicleSlot"), GetVehicleSlot)
+		.Prop(_SC("VehicleStatus"), GetVehicleStatus)
+
+		.Func(_SC("AddSpeed"), AddSpeed)
+		.Func(_SC("Ban"), Ban)
+		.Func(_SC("Disarm"), Disarm)
+		.Func(_SC("GetAmmoAtSlot"), GetAmmoAtSlot)
+		.Func(_SC("GetWeaponAtSlot"), GetWeaponAtSlot)
+		.Func(_SC("Eject"), Eject)
+		.Func(_SC("GiveMoney"), GiveMoney)
+		.Func(_SC("GiveWeapon"), GiveWeapon)
+		.Func(_SC("Kick"), Kick)
+		.Func(_SC("Redirect"), Redirect)
+		.Func(_SC("RemoveMarker"), RemoveMarker)
+		.Func(_SC("RemoveWeapon"), RemoveWeapon)
+		.Func(_SC("RestoreCamera"), RestoreCamera)
+		.Func(_SC("Select"), Select)
+		.Func(_SC("SetAlpha"), SetAlpha)
+		.Overload(_SC("SetAnim"), LegacySetAnim)
+		.Overload(_SC("SetAnim"), SetAnim)
+		.Func(_SC("SetCameraPos"), SetCameraPos)
+		// TODO: Import from upstream and change SetWantedLevel to a WantedLevel property
+		.Func(_SC("SetWantedLevel"), SetWantedLevel)
+		.Func(_SC("SetWeapon"), SetWeaponLegacy)
+		.Func(_SC("Spawn"), Spawn)
+		.Func(_SC("StreamedToPlayer"), GetStreamedToPlayer);
+
+	Sqrat::RootTable(v).Bind(_SC("CPlayer"), c);
 }
 
 void CPlayer::Delete(void) { Kick(); }
@@ -127,7 +220,7 @@ void CPlayer::GiveWeapon(int nWeapon, int nAmmo) {
 	g_pCore->F()->GivePlayerWeapon(m_nPlayerId, nWeapon, nAmmo);
 }
 
-void CPlayer::SetWeapon(int nWeapon, int nAmmo) {
+void CPlayer::SetWeaponLegacy(int nWeapon, int nAmmo) {
 	g_pCore->F()->SetPlayerWeapon(m_nPlayerId, nWeapon, nAmmo);
 }
 
