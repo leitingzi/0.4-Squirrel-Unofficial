@@ -103,8 +103,7 @@ CVector CPickup::GetPos(void) {
 	float x, y, z;
 	g_pCore->F()->PickupGetPos(m_nPickupId, &x, &y, &z);
 
-	static CVector vecPos(x, y, z);
-	return vecPos;
+	return CVector(x, y, z);
 }
 
 int CPickup::GetModel(void) {
