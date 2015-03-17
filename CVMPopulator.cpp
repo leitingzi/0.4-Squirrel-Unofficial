@@ -24,6 +24,10 @@
 #include "classes/CObject.h"
 #include "classes/CPickup.h"
 #include "classes/CPlayer.h"
+#include "classes/CSprite.h"
+#include "classes/CTextdraw.h"
+#include "classes/CTimer.h"
+#include "classes/CVehicle.h"
 
 #include "functions/CCompatFunctions.h"
 #include "functions/CEntityFunctions.h"
@@ -67,10 +71,13 @@ void CVMPopulator::RegisterStructures(HSQUIRRELVM v) {
 }
 
 void CVMPopulator::RegisterClasses(HSQUIRRELVM v) {
-	// TODO: Register other classes here as they're implemented
 	CObject::Register(v);
 	CPickup::Register(v);
 	CPlayer::Register(v);
+	CSprite::Register(v);
+	CTextdraw::Register(v);
+	CTimer::Register(v);
+	CVehicle::Register(v);
 }
 
 void CVMPopulator::RegisterConstants(HSQUIRRELVM v) {
