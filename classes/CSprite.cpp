@@ -18,13 +18,11 @@
    THE SOFTWARE.
 */
 
-#include "../structures/CRGB.h"
-#include "../structures/CVector.h"
 #include "../Main.h"
 #include "CSprite.h"
 
 void CSprite::Register(HSQUIRRELVM v) {
-	Sqrat::Class<CObject> c(v, "CSprite");
+	Sqrat::Class<CSprite> c(v, "CSprite");
 
 	c
 		.Prop(_SC("ID"), &CSprite::GetID)

@@ -194,6 +194,7 @@
     <ClCompile Include="classes\CPickup.cpp" />
     <ClCompile Include="classes\CPlayer.cpp" />
     <ClCompile Include="classes\CSprite.cpp" />
+    <ClCompile Include="classes\CTextdraw.cpp" />
     <ClCompile Include="CScript.cpp" />
     <ClCompile Include="CScriptEvents.cpp" />
     <ClCompile Include="CSQIO.cpp" />

@@ -24,6 +24,7 @@
 #include "../structures/CVector.h"
 #include "IEntity.h"
 
+class CRGBA;
 class CTextdraw : public IEntity
 {
 	public:
@@ -43,6 +44,22 @@ class CTextdraw : public IEntity
 
 	public:
 		static void Register(HSQUIRRELVM v);
+		void ShowForAll(void);
+		void ShowForPlayer(CPlayer * pPlayer);
+
+		void HideFromAll(void);
+		void HideFromPlayer(CPlayer * pPlayer);
+
+		void SetPositionForAll(int nX, int nY);
+		void SetPositionForPlayer(CPlayer * pPlayer, int nX, int nY);
+
+		void SetColourForAll(unsigned int uiColour);
+		void SetColourRGBForAll(CRGBA * pColour);
+		void SetColourForPlayer(CPlayer * pPlayer, unsigned int uiColour);
+		void SetColourRGBForPlayer(CPlayer * pPlayer, CRGBA * pColour);
+
+		void SetRelativeForAll(bool bRelativity);
+		void SetRelativeForPlayer(CPlayer * pPlayer, bool bRelativity);
 
 	private:
 		int m_nTextdrawId;
