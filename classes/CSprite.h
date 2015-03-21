@@ -49,17 +49,17 @@ class CSprite : public IEntity
 		void HideFromAll(void);
 		void HideFromPlayer(CPlayer * pPlayer);
 
-		void SetPositionForAll(int x, int y);
-		void SetPositionForPlayer(CPlayer * pPlayer, int x, int y);
+		void SetPositionForAll(int nX, int nY);
+		void SetPositionForPlayer(CPlayer * pPlayer, int nX, int nY);
 
-		void SetRotationCenterForAll(int x, int y);
-		void SetRotationCenterForPlayer(CPlayer * pPlayer, int x, int y);
+		void SetRotationCenterForAll(int nX, int nY);
+		void SetRotationCenterForPlayer(CPlayer * pPlayer, int nX, int nY);
 
-		void SetRotationForAll(float rotation);
-		void SetRotationForPlayer(CPlayer * pPlayer, float rotation);
+		void SetRotationForAll(float fRotation);
+		void SetRotationForPlayer(CPlayer * pPlayer, float fRotation);
 
-		void SetAlphaForAll(unsigned int alpha);
-		void SetAlphaForPlayer(CPlayer * pPlayer, unsigned int alpha);
+		void SetAlphaForAll(unsigned int uiAlpha);
+		void SetAlphaForPlayer(CPlayer * pPlayer, unsigned int uiAlpha);
 
 		void SetRelativeForAll(bool bRelativity);
 		void SetRelativeForPlayer(CPlayer * pPlayer, bool bRelativity);

@@ -178,8 +178,8 @@ typedef int (*SDK_CreateSprite) (int nIndex, const char * pszFilename, int fX, i
 typedef void (*SDK_DestroySprite) (int nIndex);
 typedef void (*SDK_ShowSprite) (int nIndex, int nPlayerId);
 typedef void (*SDK_HideSprite) (int nIndex, int nPlayerId);
-typedef void (*SDK_MoveSprite) (int nIndex, int nPlayerId, unsigned int fX, unsigned int fY);
-typedef void (*SDK_SetSpriteCenter) (int nIndex, int nPlayerId, unsigned int fX, unsigned int fY);
+typedef void (*SDK_MoveSprite) (int nIndex, int nPlayerId, int fX, int fY);
+typedef void (*SDK_SetSpriteCenter) (int nIndex, int nPlayerId, int fX, int fY);
 typedef void (*SDK_RotateSprite) (int nIndex, int nPlayerId, float fRotation);
 typedef void (*SDK_SetSpriteAlpha) (int nIndex, int nPlayerId, unsigned char byAlpha);
 typedef void (*SDK_SetSpriteRelativity) (int nIndex, int nPlayerId, unsigned int isRelative);

@@ -194,5 +194,8 @@
     <ClCompile Include="classes\CObject.cpp">
       <Filter>Source Files\classes</Filter>
     </ClCompile>
+    <ClCompile Include="classes\CSprite.cpp">
+      <Filter>Source Files\classes</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
