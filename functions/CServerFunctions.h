@@ -61,4 +61,6 @@ class CServerFunctions
 		static void BanIP(SQChar * pszIP);
 		static void UnbanIP(SQChar * pszIP);
 		static bool IsIPBanned(SQChar * pszIP);
+
+		static void Shutdown(void);
 };

@@ -6,6 +6,7 @@ v4.0.0
       - Added RawShowMapObject.
       - Pickup.Automatic has a new alias, Pickup.IsAutomatic.
       - Player.ShowMarkers has a new alias, Player.CanSeeMarkers.
+      - Added Player.WantedLevel, which can get and set wanted levels.
 
     Feature changes
       - UsingClasses renamed to GetUseClasses for consistency. UsingClasses
@@ -50,6 +51,11 @@ v4.0.0
       - Deprecated GetSkinID removed.
       - Deprecated Player.SetInterior. Teleport them to the interior location
         instead.
+
+    Newly deprecated features
+    (These features will continue to work but should not be used as they will be
+    removed in the future.)
+      - Deprecated Player.SetWantedLevel. Scripters should use Player.WantedLevel.
 
 v3.99
     Initial public release of 0.4-squirrel

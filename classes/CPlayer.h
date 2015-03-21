@@ -96,6 +96,7 @@ class CPlayer : public IEntity
 		int GetWeapon(void);
 		int GetWeaponAmmo(void);
 		CVector GetSpeed(void);
+		int GetWantedLevel(void);
 
 		bool GetAdmin(void);
 		bool GetFrozen(void);

@@ -58,7 +58,9 @@ void CServerFunctions::Register(HSQUIRRELVM v) {
 		
 		.Func(_SC("BanIP"), BanIP)
 		.Func(_SC("UnbanIP"), UnbanIP)
-		.Func(_SC("IsIPBanned"), IsIPBanned);
+		.Func(_SC("IsIPBanned"), IsIPBanned)
+		
+		.Func(_SC("Shutdown"), Shutdown);
 }
 
 void CServerFunctions::ClientMessage(const SQChar * pszMessage, CPlayer * pPlayer, int r, int g, int b) {
@@ -176,4 +178,8 @@ void CServerFunctions::UnbanIP(SQChar * pszIP) {
 
 bool CServerFunctions::IsIPBanned(SQChar * pszIP) {
 	return g_pCore->F()->IsIPBanned(pszIP) == 1;
+}
+
+void CServerFunctions::Shutdown(void) {
+	g_pCore->F()->ShutdownServer();
 }

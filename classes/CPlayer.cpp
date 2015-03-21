@@ -60,6 +60,7 @@ void CPlayer::Register(HSQUIRRELVM v) {
 		.Prop(_SC("Speed"), &CPlayer::GetSpeed, &CPlayer::SetSpeed)
 		.Prop(_SC("Team"), &CPlayer::GetTeam, &CPlayer::SetTeam)
 		//.Prop(_SC("Vehicle"), &CPlayer::GetVehicle, &CPlayer::SetVehicle)
+		.Prop(_SC("WantedLevel"), &CPlayer::GetWantedLevel, &CPlayer::SetWantedLevel)
 		.Prop(_SC("Weapon"), &CPlayer::GetWeapon, &CPlayer::SetWeapon)
 		.Prop(_SC("WeaponAmmo"), &CPlayer::GetWeaponAmmo, &CPlayer::SetWeaponAmmo)
 		.Prop(_SC("WeaponSlot"), &CPlayer::GetWeaponSlot, &CPlayer::SetWeaponSlot)
@@ -111,7 +112,6 @@ void CPlayer::Register(HSQUIRRELVM v) {
 		.Overload(_SC("SetAnim"), &CPlayer::LegacySetAnim)
 		.Overload(_SC("SetAnim"), &CPlayer::SetAnim)
 		.Func(_SC("SetCameraPos"), &CPlayer::SetCameraPos)
-		// TODO: Import from upstream and change SetWantedLevel to a WantedLevel property
 		.Func(_SC("SetWantedLevel"), &CPlayer::SetWantedLevel)
 		.Func(_SC("SetWeapon"), &CPlayer::SetWeaponLegacy)
 		.Func(_SC("Spawn"), &CPlayer::Spawn)
@@ -365,6 +365,10 @@ CVector CPlayer::GetSpeed(void) {
 	g_pCore->F()->GetPlayerSpeed(m_nPlayerId, &x, &y, &z);
 	
 	return CVector(x, y, z);
+}
+
+int CPlayer::GetWantedLevel(void) {
+	return g_pCore->F()->GetPlayerWantedLevel(m_nPlayerId);
 }
 
 bool CPlayer::GetAdmin(void) {

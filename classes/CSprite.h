@@ -43,6 +43,26 @@ class CSprite : public IEntity
 
 	public:
 		static void Register(HSQUIRRELVM v);
+		void ShowForAll(void);
+		void ShowForPlayer(CPlayer * pPlayer);
+
+		void HideFromAll(void);
+		void HideFromPlayer(CPlayer * pPlayer);
+
+		void SetPositionForAll(int x, int y);
+		void SetPositionForPlayer(CPlayer * pPlayer, int x, int y);
+
+		void SetRotationCenterForAll(int x, int y);
+		void SetRotationCenterForPlayer(CPlayer * pPlayer, int x, int y);
+
+		void SetRotationForAll(float rotation);
+		void SetRotationForPlayer(CPlayer * pPlayer, float rotation);
+
+		void SetAlphaForAll(unsigned int alpha);
+		void SetAlphaForPlayer(CPlayer * pPlayer, unsigned int alpha);
+
+		void SetRelativeForAll(bool bRelativity);
+		void SetRelativeForPlayer(CPlayer * pPlayer, bool bRelativity);
 
 	private:
 		int m_nSpriteId;
