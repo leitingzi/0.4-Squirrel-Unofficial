@@ -21,8 +21,15 @@
 #pragma once
 #include "CCallbackHandler.h"
 #include "CEntityPool.h"
-#include "classes/CPlayer.h"
 #include "plugin.h"
+
+#include "classes/CObject.h"
+#include "classes/CPickup.h"
+#include "classes/CPlayer.h"
+#include "classes/CSprite.h"
+#include "classes/CTextdraw.h"
+#include "classes/CTimer.h"
+#include "classes/CVehicle.h"
 
 #include <squirrel.h>
 #include <unordered_map>
@@ -35,12 +42,16 @@
 #define MAX_TEXTDRAWS  256
 
 class CScript;
-
 class CCore
 {
 	public:
 		typedef std::unordered_map<const SQChar *, CScript *>::iterator ScriptIterator;
+		typedef CEntityPool<CObject, MAX_OBJECTS> ObjectPool;
+		typedef CEntityPool<CPickup, MAX_PICKUPS> PickupPool;
 		typedef CEntityPool<CPlayer, MAX_PLAYERS> PlayerPool;
+		typedef CEntityPool<CSprite, MAX_SPRITES> SpritePool;
+		typedef CEntityPool<CTextdraw, MAX_TEXTDRAWS> TextdrawPool;
+		typedef CEntityPool<CVehicle, MAX_VEHICLES> VehiclePool;
 
 		CCore(PluginFuncs* functions, PluginCallbacks* callbacks, PluginInfo* info);
 		~CCore();
@@ -67,7 +78,11 @@ class CCore
 		// Abbreviation for "Get(I)nfo"
 		PluginInfo * I() { return m_pSDKInfo; }
 
+		ObjectPool* GetObjectPool() { return m_pObjectPool; }
+		PickupPool* GetPickupPool() { return m_pPickupPool; }
 		PlayerPool* GetPlayerPool() { return m_pPlayerPool; }
+		SpritePool* GetSpritePool() { return m_pSpritePool; }
+		TextdrawPool* GetTextdrawPool() { return m_pTextdrawPool; }
 
 	private:
 		bool ParseConfigLine(const char * szLine);
@@ -80,5 +95,10 @@ class CCore
 		PluginCallbacks * m_pSDKCalls;
 		PluginInfo * m_pSDKInfo;
 
+		ObjectPool* m_pObjectPool;
+		PickupPool* m_pPickupPool;
 		PlayerPool* m_pPlayerPool;
+		SpritePool* m_pSpritePool;
+		TextdrawPool* m_pTextdrawPool;
+		VehiclePool* m_pVehiclePool;
 };

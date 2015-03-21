@@ -28,7 +28,12 @@ CCore::CCore(PluginFuncs* functions, PluginCallbacks* callbacks, PluginInfo* inf
 	m_pSDKCalls = callbacks;
 	m_pSDKInfo = info;
 
+	m_pObjectPool = new ObjectPool();
+	m_pPickupPool = new PickupPool();
 	m_pPlayerPool = new PlayerPool();
+	m_pSpritePool = new SpritePool();
+	m_pTextdrawPool = new TextdrawPool();
+	m_pVehiclePool = new VehiclePool();
 
 	CCallbackHandler::Register(callbacks);
 	ParseConfig();
@@ -45,6 +50,14 @@ void CCore::DestroyScripts() {
 	for (ScriptIterator it = m_pScripts.begin(); it != m_pScripts.end(); it++) {
 		delete it->second;
 	}
+}
+
+void CCore::DestroyWorld() {
+	m_pObjectPool->RemoveAllScriptEntities();
+	m_pPickupPool->RemoveAllScriptEntities();
+	m_pSpritePool->RemoveAllScriptEntities();
+	m_pTextdrawPool->RemoveAllScriptEntities();
+	m_pVehiclePool->RemoveAllScriptEntities();
 }
 
 void CCore::ParseConfig() {

@@ -158,6 +158,7 @@ int CCallbackHandler::OnInitServer() {
 
 void CCallbackHandler::OnShutdownServer() {
 	CallAllEvents("onServerStop", offsetof(SScriptEvents, onServerStop), NULL, CScriptEvents::onServerStop);
+	delete g_pCore;
 }
 
 void CCallbackHandler::OnFrame(float fElapsedTime) {
