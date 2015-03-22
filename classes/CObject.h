@@ -24,6 +24,7 @@
 #include "../structures/CVector.h"
 #include "IEntity.h"
 
+class CPlayer;
 class CObject : public IEntity
 {
 	public:

@@ -20,7 +20,6 @@
 
 #pragma once
 #include <sqrat.h>
-#include "../Main.h"
 
 class CBounds
 {

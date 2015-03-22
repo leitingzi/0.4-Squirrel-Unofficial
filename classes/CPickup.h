@@ -20,8 +20,9 @@
 
 #pragma once
 #include "IEntity.h"
-#include "../structures/CVector.h"
 
+class CPlayer;
+class CVector;
 class CPickup : public IEntity
 {
 	public:

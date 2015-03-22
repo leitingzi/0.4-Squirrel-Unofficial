@@ -35,7 +35,7 @@ class CEntityFunctions
 	public:
 		static void Register(HSQUIRRELVM v);
 
-		static int GetPlayerIDFromName(const SQChar * pszName);
+		static int GetPlayerIDFromName(SQChar * pszName);
 		static bool IsWorldCompatibleWithPlayer(CPlayer * pPlayer, int nWorld);
 
 		static CPickup* CreatePickupLegacy(int nModel, CVector * pPos);
@@ -50,6 +50,8 @@ class CEntityFunctions
 		static CObject* FindObject(int nId);
 		static CPickup* FindPickup(int nId);
 		static SQInteger FindPlayer(HSQUIRRELVM v);
+		// TODO: FindSprite
+		// TODO: FindTextdraw
 		static CVehicle* FindVehicle(int nId);
 
 		static void ForceAllSelect(void);

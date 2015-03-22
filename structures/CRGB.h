@@ -21,7 +21,6 @@
 #pragma once
 #include <sqrat.h>
 #include "IRefreshableStructure.h"
-#include "../Main.h"
 
 class CRGB : IRefreshableStructure<CRGB>
 {

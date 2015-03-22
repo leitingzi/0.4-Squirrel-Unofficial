@@ -18,6 +18,8 @@
    THE SOFTWARE.
 */
 
+#include "../Main.h"
+#include "../structures/CVector.h"
 #include "CPickup.h"
 
 void CPickup::Register(HSQUIRRELVM v) {

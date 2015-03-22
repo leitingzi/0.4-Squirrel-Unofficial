@@ -18,6 +18,7 @@
    THE SOFTWARE.
 */
 
+#pragma once
 #ifdef WIN32
 	#define PLUGIN_EXPORT __declspec(dllexport)
 	#pragma warning( disable : 4244 )

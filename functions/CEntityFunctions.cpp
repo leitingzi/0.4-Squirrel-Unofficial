@@ -18,8 +18,15 @@
    THE SOFTWARE.
 */
 
+#include "../Main.h"
+#include "../classes/CPlayer.h"
 #include "CEntityFunctions.h"
+#include <sqrat.h>
 
 void CEntityFunctions::Register(HSQUIRRELVM v) {
 
+}
+
+int CEntityFunctions::GetPlayerIDFromName(SQChar * pszName) {
+	return g_pCore->F()->GetPlayerIDFromName(pszName);
 }
