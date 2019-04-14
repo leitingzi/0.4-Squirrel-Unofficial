@@ -47,11 +47,7 @@ extern "C" {
         void            (*close)(HSQUIRRELVM v);
         void            (*setforeignptr)(HSQUIRRELVM v,SQUserPointer p);
         SQUserPointer   (*getforeignptr)(HSQUIRRELVM v);
-#if SQUIRREL_VERSION_NUMBER >= 300
-        void            (*setprintfunc)(HSQUIRRELVM v, SQPRINTFUNCTION printfunc, SQPRINTFUNCTION);
-#else
-        void            (*setprintfunc)(HSQUIRRELVM v, SQPRINTFUNCTION printfunc);
-#endif
+        void            (*setprintfunc)(HSQUIRRELVM v, SQPRINTFUNCTION printfunc, SQPRINTFUNCTION errfunc);
         SQPRINTFUNCTION (*getprintfunc)(HSQUIRRELVM v);
         SQRESULT        (*suspendvm)(HSQUIRRELVM v);
         SQRESULT        (*wakeupvm)(HSQUIRRELVM v,SQBool resumedret,SQBool retval,SQBool raiseerror,SQBool throwerror);
@@ -71,11 +67,7 @@ extern "C" {
         void            (*remove)(HSQUIRRELVM v,SQInteger idx);
         SQInteger       (*gettop)(HSQUIRRELVM v);
         void            (*settop)(HSQUIRRELVM v,SQInteger newtop);
-#if SQUIRREL_VERSION_NUMBER >= 300
-        SQRESULT            (*reservestack)(HSQUIRRELVM v,SQInteger nsize);
-#else
-        void            (*reservestack)(HSQUIRRELVM v,SQInteger nsize);
-#endif
+        SQRESULT        (*reservestack)(HSQUIRRELVM v,SQInteger nsize);
         SQInteger       (*cmp)(HSQUIRRELVM v);
         void            (*move)(HSQUIRRELVM dest,HSQUIRRELVM src,SQInteger idx);
 
@@ -96,11 +88,7 @@ extern "C" {
         SQInteger       (*getsize)(HSQUIRRELVM v,SQInteger idx);
         SQRESULT        (*getbase)(HSQUIRRELVM v,SQInteger idx);
         SQBool          (*instanceof)(HSQUIRRELVM v);
-#if SQUIRREL_VERSION_NUMBER >= 300
-        SQRESULT            (*tostring)(HSQUIRRELVM v,SQInteger idx);
-#else
-        void            (*tostring)(HSQUIRRELVM v,SQInteger idx);
-#endif
+        SQRESULT        (*tostring)(HSQUIRRELVM v,SQInteger idx);
         void            (*tobool)(HSQUIRRELVM v, SQInteger idx, SQBool *b);
         SQRESULT        (*getstring)(HSQUIRRELVM v,SQInteger idx,const SQChar **c);
         SQRESULT        (*getinteger)(HSQUIRRELVM v,SQInteger idx,SQInteger *i);
@@ -189,8 +177,86 @@ extern "C" {
         /*debug*/
         SQRESULT        (*stackinfos)(HSQUIRRELVM v,SQInteger level,SQStackInfos *si);
         void            (*setdebughook)(HSQUIRRELVM v);
+        void            (*setnativedebughook)(HSQUIRRELVM v,SQDEBUGHOOK hook);
+
+        // TODO: MOVE LATER
+        void            (*setsharedforeignptr)(HSQUIRRELVM v,SQUserPointer p);
+        SQUserPointer   (*getsharedforeignptr)(HSQUIRRELVM v);
+        void            (*setvmreleasehook)(HSQUIRRELVM v,SQRELEASEHOOK hook);
+        SQRELEASEHOOK   (*getvmreleasehook)(HSQUIRRELVM v);
+        void            (*setsharedreleasehook)(HSQUIRRELVM v,SQRELEASEHOOK hook);
+        SQRELEASEHOOK   (*getsharedreleasehook)(HSQUIRRELVM v);
+        SQPRINTFUNCTION (*geterrorfunc)(HSQUIRRELVM v);
+        SQInteger       (*getversion)();
+
+        void            (*newtableex)(HSQUIRRELVM v,SQInteger initialcapacity);
+        SQRESULT        (*setclosureroot)(HSQUIRRELVM v,SQInteger idx);
+        SQRESULT        (*getclosureroot)(HSQUIRRELVM v,SQInteger idx);
+        void            (*pushthread)(HSQUIRRELVM v, HSQUIRRELVM thread);
+        SQRESULT        (*typeof)(HSQUIRRELVM v,SQInteger idx);
+        SQHash          (*gethash)(HSQUIRRELVM v, SQInteger idx);
+
+        SQRELEASEHOOK   (*getreleasehook)(HSQUIRRELVM v,SQInteger idx);
+        SQRESULT        (*getfunctioninfo)(HSQUIRRELVM v,SQInteger level,SQFunctionInfo *fi);
+        SQRESULT        (*getclosurename)(HSQUIRRELVM v,SQInteger idx);
+        SQRESULT        (*getmemberhandle)(HSQUIRRELVM v,SQInteger idx,HSQMEMBERHANDLE *handle);
+        SQRESULT        (*getbyhandle)(HSQUIRRELVM v,SQInteger idx,const HSQMEMBERHANDLE *handle);
+        SQRESULT        (*setbyhandle)(HSQUIRRELVM v,SQInteger idx,const HSQMEMBERHANDLE *handle);
+
+        SQRESULT        (*newmember)(HSQUIRRELVM v,SQInteger idx,SQBool bstatic);
+        SQRESULT        (*rawnewmember)(HSQUIRRELVM v,SQInteger idx,SQBool bstatic);
+
+        SQRESULT        (*getcallee)(HSQUIRRELVM v);
+        SQRESULT        (*throwobject)(HSQUIRRELVM v);
+
+        SQUnsignedInteger (*getrefcount)(HSQUIRRELVM v,HSQOBJECT *po);
+        SQUserPointer   (*objtouserpointer)(const HSQOBJECT *o);
+        SQUnsignedInteger (*getvmrefcount)(HSQUIRRELVM v, const HSQOBJECT *po);
+
+        SQRESULT        (*resurrectunreachable)(HSQUIRRELVM v);
     } sq_api;
     typedef sq_api* HSQAPI;
+
+    typedef struct {
+        /*sqstdaux*/
+        void            (*seterrorhandlers)(HSQUIRRELVM v);
+        void            (*printcallstack)(HSQUIRRELVM v);
+
+        /*sqstdblob*/
+        SQUserPointer   (*createblob)(HSQUIRRELVM v, SQInteger size);
+        SQRESULT        (*getblob)(HSQUIRRELVM v, SQInteger idx, SQUserPointer *ptr);
+        SQInteger       (*getblobsize)(HSQUIRRELVM v, SQInteger idx);
+
+        /*sqstdio*/
+        SQFILE          (*fopen)(const SQChar *, const SQChar *);
+        SQInteger       (*fread)(SQUserPointer, SQInteger, SQInteger, SQFILE);
+        SQInteger       (*fwrite)(const SQUserPointer, SQInteger, SQInteger, SQFILE);
+        SQInteger       (*fseek)(SQFILE, SQInteger, SQInteger);
+        SQInteger       (*ftell)(SQFILE);
+        SQInteger       (*fflush)(SQFILE);
+        SQInteger       (*fclose)(SQFILE);
+        SQInteger       (*feof)(SQFILE);
+
+        SQRESULT        (*createfile)(HSQUIRRELVM v, SQFILE file, SQBool own);
+        SQRESULT        (*getfile)(HSQUIRRELVM v, SQInteger idx, SQFILE *file);
+
+        /*compiler helpers*/
+        SQRESULT        (*loadfile)(HSQUIRRELVM v, const SQChar *filename, SQBool printerror);
+        SQRESULT        (*dofile)(HSQUIRRELVM v, const SQChar *filename, SQBool retval, SQBool printerror);
+        SQRESULT        (*writeclosuretofile)(HSQUIRRELVM v, const SQChar *filename);
+
+        /*sqstdstring*/
+        SQRex*          (*rex_compile)(const SQChar *pattern, const SQChar **error);
+        void            (*rex_free)(SQRex *exp);
+        SQBool          (*rex_match)(SQRex* exp, const SQChar* text);
+        SQBool          (*rex_search)(SQRex* exp, const SQChar* text, const SQChar** out_begin, const SQChar** out_end);
+        SQBool          (*rex_searchrange)(SQRex* exp, const SQChar* text_begin, const SQChar* text_end, const SQChar** out_begin, const SQChar** out_end);
+        SQInteger       (*rex_getsubexpcount)(SQRex* exp);
+        SQBool          (*rex_getsubexp)(SQRex* exp, SQInteger n, SQRexMatch *subexp);
+
+        SQRESULT        (*format)(HSQUIRRELVM v, SQInteger nformatstringidx, SQInteger *outlen, SQChar **output);
+    } sqstd_api;
+    typedef sqstd_api* HSQSTDAPI;
 
 #ifdef __cplusplus
 } /*extern "C"*/

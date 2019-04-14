@@ -3,8 +3,11 @@
 
 // God have mercy on our souls
 #define SQAPI(sz) sq->sz = sq_ ## sz
+#define SQSTDAPI(sz) sqstd->sz = sqstd_ ## sz
+
 extern HSQAPI sq;
 extern HSQUIRRELVM v;
+extern HSQSTDAPI sqstd;
 
 void InitSQAPI()
 {
@@ -18,11 +21,19 @@ void InitSQAPI()
 	SQAPI(close);
 	SQAPI(setforeignptr);
 	SQAPI(getforeignptr);
+	SQAPI(setsharedforeignptr);
+	SQAPI(getsharedforeignptr);
+	SQAPI(setvmreleasehook);
+	SQAPI(getvmreleasehook);
+	SQAPI(setsharedreleasehook);
+	SQAPI(getsharedreleasehook);
 	SQAPI(setprintfunc);
 	SQAPI(getprintfunc);
+	SQAPI(geterrorfunc);
 	SQAPI(suspendvm);
 	SQAPI(wakeupvm);
 	SQAPI(getvmstate);
+	SQAPI(getversion);
 
 	// Compiler
 	SQAPI(compile);
@@ -45,10 +56,13 @@ void InitSQAPI()
 	// Object creation handling
 	SQAPI(newuserdata);
 	SQAPI(newtable);
+	SQAPI(newtableex);
 	SQAPI(newarray);
 	SQAPI(newclosure);
 	SQAPI(setparamscheck);
 	SQAPI(bindenv);
+	SQAPI(setclosureroot);
+	SQAPI(getclosureroot);
 
 	SQAPI(pushstring);
 	SQAPI(pushfloat);
@@ -56,9 +70,12 @@ void InitSQAPI()
 	SQAPI(pushbool);
 	SQAPI(pushuserpointer);
 	SQAPI(pushnull);
+	SQAPI(pushthread);
 
 	SQAPI(gettype);
+	SQAPI(typeof);
 	SQAPI(getsize);
+	SQAPI(gethash);
 	SQAPI(getbase);
 	SQAPI(instanceof);
 
@@ -75,8 +92,11 @@ void InitSQAPI()
 	SQAPI(gettypetag);
 
 	SQAPI(setreleasehook);
+	SQAPI(getreleasehook);
 	SQAPI(getscratchpad);
+	SQAPI(getfunctioninfo);
 	SQAPI(getclosureinfo);
+	SQAPI(getclosurename);
 	SQAPI(setnativeclosurename);
 	SQAPI(setinstanceup);
 	SQAPI(getinstanceup);
@@ -88,6 +108,9 @@ void InitSQAPI()
 	SQAPI(getclass);
 	SQAPI(weakref);
 	SQAPI(getdefaultdelegate);
+	SQAPI(getmemberhandle);
+	SQAPI(getbyhandle);
+	SQAPI(setbyhandle);
 
 	// Object manipulation
 	SQAPI(pushroottable);
@@ -102,6 +125,8 @@ void InitSQAPI()
 	SQAPI(rawget);
 	SQAPI(rawset);
 	SQAPI(rawdeleteslot);
+	SQAPI(newmember);
+	SQAPI(rawnewmember);
 
 	SQAPI(arrayappend);
 	SQAPI(arraypop);
@@ -122,8 +147,10 @@ void InitSQAPI()
 	SQAPI(call);
 	SQAPI(resume);
 	SQAPI(getlocal);
+	SQAPI(getcallee);
 	SQAPI(getfreevariable);
 	SQAPI(throwerror);
+	SQAPI(throwobject);
 	SQAPI(reseterror);
 	SQAPI(getlasterror);
 
@@ -132,15 +159,19 @@ void InitSQAPI()
 	SQAPI(pushobject);
 	SQAPI(addref);
 	SQAPI(release);
+	SQAPI(getrefcount);
 	SQAPI(resetobject);
 	SQAPI(objtostring);
 	SQAPI(objtobool);
 	SQAPI(objtointeger);
 	SQAPI(objtofloat);
+	SQAPI(objtouserpointer);
 	SQAPI(getobjtypetag);
+	SQAPI(getvmrefcount);
 
 	// Garbage collection
 	SQAPI(collectgarbage);
+	SQAPI(resurrectunreachable);
 
 	// Serialization
 	SQAPI(writeclosure);
@@ -154,6 +185,51 @@ void InitSQAPI()
 	// Debugging
 	SQAPI(stackinfos);
 	SQAPI(setdebughook);
+	SQAPI(setnativedebughook);
+}
+
+void InitSQSTDAPI()
+{
+	if (sqstd == NULL)
+		sqstd = new sqstd_api();
+
+	// sqstdaux
+	SQSTDAPI(seterrorhandlers);
+	SQSTDAPI(printcallstack);
+
+	// sqstdblob
+	SQSTDAPI(createblob);
+	SQSTDAPI(getblob);
+	SQSTDAPI(getblobsize);
+
+	// sqstdio
+	SQSTDAPI(fopen);
+	SQSTDAPI(fread);
+	SQSTDAPI(fwrite);
+	SQSTDAPI(fseek);
+	SQSTDAPI(ftell);
+	SQSTDAPI(fflush);
+	SQSTDAPI(fclose);
+	SQSTDAPI(feof);
+
+	SQSTDAPI(createfile);
+	SQSTDAPI(getfile);
+
+	// compiler helpers
+	SQSTDAPI(loadfile);
+	SQSTDAPI(dofile);
+	SQSTDAPI(writeclosuretofile);
+
+	// sqstdstring
+	SQSTDAPI(rex_compile);
+	SQSTDAPI(rex_free);
+	SQSTDAPI(rex_match);
+	SQSTDAPI(rex_search);
+	SQSTDAPI(rex_searchrange);
+	SQSTDAPI(rex_getsubexpcount);
+	SQSTDAPI(rex_getsubexp);
+
+	SQSTDAPI(format);
 }
 
 HSQAPI * pfGetSquirrelAPI()
@@ -166,4 +242,10 @@ HSQUIRRELVM * pfGetSquirrelVM()
 {
 	// Same as pfGetSquirrelAPI, just a different variable
 	return &v;
+}
+
+HSQSTDAPI * pfGetSquirrelStdAPI()
+{
+	// Same as pfGetSquirrelAPI, just a different variable
+	return &sqstd;
 }
