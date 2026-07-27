@@ -17,3 +17,5 @@ builds/
 *.user
 *.a
 *.lib
+
+.vs
