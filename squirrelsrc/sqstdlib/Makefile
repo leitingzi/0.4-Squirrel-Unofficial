@@ -25,8 +25,9 @@ SRCS= \
 	sqstdrex.cpp
 
 
+
 sq32:
-	gcc -fPIC -O2 -fno-exceptions -fno-rtti -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ)
+	g++ -fPIC -O2 -m32 -D_SQ32 -fno-exceptions -fno-rtti -Wall -fno-strict-aliasing -c $(SRCS) $(INCZ)
 	ar rc $(OUT) *.o
 	rm *.o
 
