@@ -255,6 +255,9 @@
       <Project>{13940df3-6e53-495c-9a22-2e8999ae5e8f}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".github\workflows\ci.yml" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

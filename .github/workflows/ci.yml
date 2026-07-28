@@ -1,0 +1,45 @@
+name: Build Squirrel Plugin
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential g++-multilib libc6-dev-i386 make python3
+
+      - name: Show Makefile
+        run: cat Makefile
+
+      - name: Build squirrel libs (squirrelsrc)
+        run: |
+          # Build only 64-bit libraries on the CI runner to avoid 32-bit toolchain issues
+          make -C squirrelsrc sq64
+          cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel64.a || true
+          cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib64.a || true
+
+      - name: Build project (Makefile) - 64-bit
+        run: make build64
+
+      - name: Copy legacy build/ to generate/
+        run: |
+          mkdir -p generate
+          if [ -d build ]; then
+            cp -r build/* generate/ || true
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: squirrel-build
+          path: generate/

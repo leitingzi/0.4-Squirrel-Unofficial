@@ -183,4 +183,7 @@
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".github\workflows\ci.yml" />
+  </ItemGroup>
 </Project>
