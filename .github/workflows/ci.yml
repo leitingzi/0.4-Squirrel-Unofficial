@@ -62,13 +62,15 @@ jobs:
             exit 1
           }
           $installPath = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
+          $installPath = $installPath | Where-Object { $_ -and $_ -ne '' } | Select-Object -First 1
           if (-not $installPath) {
             Write-Error "No Visual Studio installation with MSBuild found by vswhere"
             exit 1
           }
+          $installPath = $installPath.Trim()
           $msbuildPaths = @(
-            Join-Path $installPath "MSBuild\Current\Bin\MSBuild.exe",
-            Join-Path $installPath "MSBuild\15.0\Bin\MSBuild.exe",
+            Join-Path $installPath "MSBuild\Current\Bin\MSBuild.exe"
+            Join-Path $installPath "MSBuild\15.0\Bin\MSBuild.exe"
             Join-Path $installPath "MSBuild\14.0\Bin\MSBuild.exe"
           )
           $msbuild = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
