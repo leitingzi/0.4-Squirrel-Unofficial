@@ -146,13 +146,24 @@ jobs:
       - name: Repackage all artifacts into single archive
         run: |
           set -e
-          mkdir -p combined
-          # Move each artifact folder into combined/, preserving names (linux-x86 etc.)
-          if [ -d downloaded ]; then
-            mv downloaded/* combined/ || true
-          fi
+          mkdir -p collected
+          echo "Scanning downloaded artifacts for .so and .dll files"
+          for d in downloaded/*; do
+            if [ -d "$d" ]; then
+              name=$(basename "$d")
+              echo "Processing artifact: $name"
+              mkdir -p "collected/$name"
+              # Find so/dll inside this artifact and copy into collected/<artifact>/ preserving filenames
+              find "$d" -type f \( -iname '*.so' -o -iname '*.dll' \) -print0 | while IFS= read -r -d '' f; do
+                echo "  found: $f"
+                cp --parents "$f" "collected/$name/" 2>/dev/null || cp "$f" "collected/$name/" || true
+              done
+            fi
+          done
+          echo "Collected contents:" 
+          find collected -type f -maxdepth 3 -print || true
           ARCHIVE_NAME="squirrel-all-artifacts-${{ github.run_number }}.tar.gz"
-          tar -czf "$ARCHIVE_NAME" -C combined .
+          tar -czf "$ARCHIVE_NAME" -C collected .
           echo "Created $ARCHIVE_NAME"
 
       - name: Upload combined artifact
