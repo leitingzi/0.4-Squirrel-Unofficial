@@ -31,22 +31,22 @@ jobs:
       - name: Build project (Makefile) - 64-bit
         run: make build64
 
-      - name: Copy legacy build/ to generate/
+      - name: Collect artifacts into generate/
         run: |
+          set -e
           mkdir -p generate
+          echo "Listing objdir for built shared objects:"
+          find objdir -type f -name '*.so' -print || true
+          # Copy any .so from objdir into generate preserving paths
+          if find objdir -type f -name '*.so' | grep -q .; then
+            find objdir -type f -name '*.so' -exec cp --parents {} generate/ \;
+          fi
+          # Also copy legacy build/ outputs if present
           if [ -d build ]; then
             cp -r build/* generate/ || true
           fi
-
-      - name: Show generate contents (diagnostic)
-        run: |
-          echo "PWD: $(pwd)"
-          echo "List repo root:"
-          ls -la || true
-          echo "List generate/:"
+          echo "Final generate/ contents:"
           ls -la generate || true
-          echo "Find files under generate/:"
-          find generate -maxdepth 3 -type f -print || true
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
