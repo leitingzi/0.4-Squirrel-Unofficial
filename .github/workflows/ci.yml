@@ -31,8 +31,15 @@ jobs:
       - name: Build project (Makefile) - 64-bit
         run: make build64
 
+      - name: Copy legacy build/ to generate/
+        run: |
+          mkdir -p generate
+          if [ -d build ]; then
+            cp -r build/* generate/ || true
+          fi
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: squirrel-build
-          path: build/
+          path: generate/
