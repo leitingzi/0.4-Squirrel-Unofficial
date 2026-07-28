@@ -45,11 +45,18 @@ jobs:
       - name: Build project on Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
+          set -e
           if [ "${{ matrix.arch }}" = "x86" ]; then
-            make build32 || true
+            echo "Building for x86"
+            make build32
           else
-            make build64 || true
+            echo "Building for x64"
+            make build64
           fi
+          echo "Build finished, listing tree:" 
+          ls -la || true
+          echo "Recursive listing:" 
+          find . -maxdepth 3 -type f -print || true
 
       - name: Build project on Windows (MSBuild)
         if: matrix.os == 'windows-latest'
@@ -98,6 +105,11 @@ jobs:
           fi
           if [ -d build ]; then
             cp -r build/* generate/ || true
+          fi
+          # also copy static libs built by squirrelsrc (if present)
+          if [ -d squirrelsrc/lib ]; then
+            mkdir -p generate/squirrelsrc/lib
+            cp squirrelsrc/lib/* generate/squirrelsrc/lib/ || true
           fi
           echo "Final generate/ contents:"
           ls -la generate || true
