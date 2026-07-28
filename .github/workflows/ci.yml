@@ -108,7 +108,8 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           New-Item -ItemType Directory -Force -Path generate | Out-Null
-          Get-ChildItem -Path . -Recurse -Filter '*.dll','*.exe' | ForEach-Object {
+          # Use -Include with -File to match multiple extensions (Filter accepts only a single string)
+          Get-ChildItem -Path . -Recurse -File -Include '*.dll','*.exe' | ForEach-Object {
             $relative = $_.FullName.Substring((Get-Location).Path.Length).TrimStart('\\')
             $dest = Join-Path -Path 'generate' -ChildPath $relative
             New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
