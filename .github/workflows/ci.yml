@@ -61,19 +61,10 @@ jobs:
             Write-Error "vswhere not found at $vswhere"
             exit 1
           }
-          # Ensure we get a single installation path (vswhere can return multiple lines/entries)
-          $vswhereOutput = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
-          if (-not $vswhereOutput) {
-            Write-Error "No Visual Studio installation with MSBuild found by vswhere"
-            exit 1
-          }
-          if ($vswhereOutput -is [System.Array]) {
-            $installPath = $vswhereOutput[0]
-          } else {
-            $installPath = $vswhereOutput
-          }
-          $installPath = [string]$installPath
-          $installPath = $installPath.Trim()
+          # Robustly parse vswhere output into lines and pick the first non-empty line
+          $rawVswhere = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath) | Out-String
+          $lines = $rawVswhere -split "\r?\n"
+          $installPath = ($lines | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' } | Select-Object -First 1)
           if (-not $installPath) {
             Write-Error "No Visual Studio installation with MSBuild found by vswhere"
             exit 1
