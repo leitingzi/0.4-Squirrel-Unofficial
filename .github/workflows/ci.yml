@@ -23,15 +23,13 @@ jobs:
 
       - name: Build squirrel libs (squirrelsrc)
         run: |
-          make -C squirrelsrc sq32
-          cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel32.a || true
-          cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib32.a || true
+          # Build only 64-bit libraries on the CI runner to avoid 32-bit toolchain issues
           make -C squirrelsrc sq64
           cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel64.a || true
           cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib64.a || true
 
-      - name: Build project (Makefile)
-        run: make build
+      - name: Build project (Makefile) - 64-bit
+        run: make build64
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
