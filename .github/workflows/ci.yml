@@ -55,10 +55,32 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          if (-not (Test-Path $vswhere)) {
+            Write-Error "vswhere not found at $vswhere"
+            exit 1
+          }
+          $installPath = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
+          if (-not $installPath) {
+            Write-Error "No Visual Studio installation with MSBuild found by vswhere"
+            exit 1
+          }
+          $msbuildPaths = @(
+            Join-Path $installPath "MSBuild\Current\Bin\MSBuild.exe",
+            Join-Path $installPath "MSBuild\15.0\Bin\MSBuild.exe",
+            Join-Path $installPath "MSBuild\14.0\Bin\MSBuild.exe"
+          )
+          $msbuild = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $msbuild) {
+            Write-Error "MSBuild.exe not found under $installPath"
+            exit 1
+          }
+          Write-Host "Using MSBuild: $msbuild"
           if ("${{ matrix.arch }}" -eq "x86") {
-            msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
+            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
           } else {
-            msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
+            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
           }
 
       - name: Collect artifacts into generate/
