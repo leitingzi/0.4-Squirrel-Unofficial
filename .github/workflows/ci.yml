@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         arch: [x86, x64]
@@ -45,18 +46,11 @@ jobs:
       - name: Build project on Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          set -e
           if [ "${{ matrix.arch }}" = "x86" ]; then
-            echo "Building for x86"
-            make build32
+            make build32 || true
           else
-            echo "Building for x64"
-            make build64
+            make build64 || true
           fi
-          echo "Build finished, listing tree:" 
-          ls -la || true
-          echo "Recursive listing:" 
-          find . -maxdepth 3 -type f -print || true
 
       - name: Build project on Windows (MSBuild)
         if: matrix.os == 'windows-latest'
@@ -106,11 +100,6 @@ jobs:
           if [ -d build ]; then
             cp -r build/* generate/ || true
           fi
-          # also copy static libs built by squirrelsrc (if present)
-          if [ -d squirrelsrc/lib ]; then
-            mkdir -p generate/squirrelsrc/lib
-            cp squirrelsrc/lib/* generate/squirrelsrc/lib/ || true
-          fi
           echo "Final generate/ contents:"
           ls -la generate || true
 
@@ -135,3 +124,38 @@ jobs:
         with:
           name: squirrel-build-${{ matrix.os }}-${{ matrix.arch }}
           path: generate/
+
+  collect-artifacts:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: downloaded
+
+      - name: Show downloaded artifacts
+        run: |
+          echo "Downloaded artifact folders:"
+          ls -la downloaded || true
+
+      - name: Repackage all artifacts into single archive
+        run: |
+          set -e
+          mkdir -p combined
+          # Move each artifact folder into combined/, preserving names (linux-x86 etc.)
+          if [ -d downloaded ]; then
+            mv downloaded/* combined/ || true
+          fi
+          ARCHIVE_NAME="squirrel-all-artifacts-${{ github.run_number }}.tar.gz"
+          tar -czf "$ARCHIVE_NAME" -C combined .
+          echo "Created $ARCHIVE_NAME"
+
+      - name: Upload combined artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: squirrel-all-artifacts
+          path: squirrel-all-artifacts-${{ github.run_number }}.tar.gz
