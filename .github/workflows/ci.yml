@@ -2,101 +2,58 @@ name: Build Squirrel Plugin
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: write
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
-  build-linux-x86:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        arch: [x86, x64]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          fetch-depth: 0
 
-      - name: Setup build tools
+      - name: Setup build tools (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential g++-multilib libc6-dev-i386 make python3
 
-      - name: Build Linux x86
+      - name: Show environment
         run: |
-          set -e
-          make -C squirrelsrc sq32 || true
-          make build32 || true
+          echo "Runner OS: $RUNNER_OS"
+          echo "Matrix OS: ${{ matrix.os }}"
+          echo "Arch: ${{ matrix.arch }}"
 
-      - name: Collect libs
+      - name: Build squirrel libs (squirrelsrc) on Linux
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          set -e
-          OUTDIR="generate/ubuntu-latest-x86"
-          mkdir -p "$OUTDIR"
-          if [ -d build ]; then
-            find build -type f -name '*.so' -print0 | while IFS= read -r -d '' f; do
-              cp "$f" "$OUTDIR/" || true
-            done
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            make -C squirrelsrc sq32
+            cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel32.a || true
+            cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib32.a || true
+          else
+            make -C squirrelsrc sq64
+            cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel64.a || true
+            cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib64.a || true
           fi
-          echo "Files in $OUTDIR:"
-          ls -la "$OUTDIR" || true
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: squirrel-build-ubuntu-latest-x86
-          path: generate/ubuntu-latest-x86
-
-  build-linux-x64:
-    needs: build-linux-x86
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          fetch-depth: 0
-
-      - name: Setup build tools
+      - name: Build project on Linux
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential make python3
-
-      - name: Build Linux x64
-        run: |
-          set -e
-          make -C squirrelsrc sq64 || true
-          make build64 || true
-
-      - name: Collect libs
-        run: |
-          set -e
-          OUTDIR="generate/ubuntu-latest-x64"
-          mkdir -p "$OUTDIR"
-          if [ -d build ]; then
-            find build -type f -name '*.so' -print0 | while IFS= read -r -d '' f; do
-              cp "$f" "$OUTDIR/" || true
-            done
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            make build32 || true
+          else
+            make build64 || true
           fi
-          echo "Files in $OUTDIR:"
-          ls -la "$OUTDIR" || true
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: squirrel-build-ubuntu-latest-x64
-          path: generate/ubuntu-latest-x64
-
-  build-windows-x86:
-    needs: build-linux-x64
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          fetch-depth: 0
-
-      - name: Build Windows x86 (MSBuild)
+      - name: Build project on Windows (MSBuild)
+        if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -105,82 +62,53 @@ jobs:
             Write-Error "vswhere not found at $vswhere"
             exit 1
           }
-          $raw = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath) | Out-String
-          $lines = $raw -split "\r?\n"
+          # Robustly parse vswhere output into lines and pick the first non-empty line
+          $rawVswhere = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath) | Out-String
+          $lines = $rawVswhere -split "\r?\n"
           $installPath = ($lines | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' } | Select-Object -First 1)
-          if (-not $installPath) { Write-Error "No VS found"; exit 1 }
+          if (-not $installPath) {
+            Write-Error "No Visual Studio installation with MSBuild found by vswhere"
+            exit 1
+          }
+          # Build MSBuild candidate paths without Join-Path to avoid parameter type issues
           $msbuildPaths = @(
             "$installPath\MSBuild\Current\Bin\MSBuild.exe",
-            "$installPath\MSBuild\15.0\Bin\MSBuild.exe"
+            "$installPath\MSBuild\15.0\Bin\MSBuild.exe",
+            "$installPath\MSBuild\14.0\Bin\MSBuild.exe"
           )
-          $ms = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
-          if (-not $ms) { Write-Error "MSBuild.exe not found"; exit 1 }
-          & $ms Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
-
-      - name: Collect libs
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $out = "generate/windows-latest-x86"
-          New-Item -ItemType Directory -Force -Path $out | Out-Null
-          if (Test-Path -Path "build") {
-            Get-ChildItem -Path build -Recurse -Include *.dll,*.so -File | ForEach-Object {
-              Copy-Item -Path $_.FullName -Destination $out -Force
-            }
+          $msbuild = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $msbuild) {
+            Write-Error "MSBuild.exe not found under $installPath"
+            exit 1
           }
-          Write-Host "Files in $out:"
-          Get-ChildItem -Path $out | Format-Table -AutoSize
+          Write-Host "Using MSBuild: $msbuild"
+          if ("${{ matrix.arch }}" -eq "x86") {
+            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
+          } else {
+            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
+          }
 
-      - name: Upload artifact
+      - name: Collect artifacts into generate/
+        run: |
+          set -e
+          mkdir -p generate
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            # copy shared objects from objdir
+            if find objdir -type f -name '*.so' | grep -q .; then
+              find objdir -type f -name '*.so' -exec cp --parents {} generate/ \;
+            fi
+            if [ -d build ]; then
+              cp -r build/* generate/ || true
+            fi
+          else
+            # On Windows runner use PowerShell to find DLL/EXE
+            pwsh -Command "Get-ChildItem -Path . -Recurse -Filter '*.dll','*.exe' | ForEach-Object { $dest='generate\'+($_.FullName.Substring((Get-Location).Path.Length).TrimStart('\\')); New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null; Copy-Item $_.FullName $dest }
+          fi
+          echo "Final generate/ contents:"
+          ls -la generate || true
+
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: squirrel-build-windows-latest-x86
-          path: generate/windows-latest-x86
-
-  build-windows-x64:
-    needs: build-windows-x86
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          fetch-depth: 0
-
-      - name: Build Windows x64 (MSBuild)
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          if (-not (Test-Path $vswhere)) { Write-Error "vswhere not found"; exit 1 }
-          $raw = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath) | Out-String
-          $lines = $raw -split "\r?\n"
-          $installPath = ($lines | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' } | Select-Object -First 1)
-          if (-not $installPath) { Write-Error "No VS found"; exit 1 }
-          $msbuildPaths = @(
-            "$installPath\MSBuild\Current\Bin\MSBuild.exe",
-            "$installPath\MSBuild\15.0\Bin\MSBuild.exe"
-          )
-          $ms = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
-          if (-not $ms) { Write-Error "MSBuild.exe not found"; exit 1 }
-          & $ms Squirrel04.sln /p:Configuration=Release /p:Platform=x64
-
-      - name: Collect libs
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $out = "generate/windows-latest-x64"
-          New-Item -ItemType Directory -Force -Path $out | Out-Null
-          if (Test-Path -Path "build") {
-            Get-ChildItem -Path build -Recurse -Include *.dll,*.so -File | ForEach-Object {
-              Copy-Item -Path $_.FullName -Destination $out -Force
-            }
-          }
-          Write-Host "Files in $out:"
-          Get-ChildItem -Path $out | Format-Table -AutoSize
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: squirrel-build-windows-latest-x64
-          path: generate/windows-latest-x64
+          name: squirrel-build-${{ matrix.os }}-${{ matrix.arch }}
+          path: generate/
