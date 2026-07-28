@@ -46,9 +46,9 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           if [ "${{ matrix.arch }}" = "x86" ]; then
-            make build32 || true
+            make build32
           else
-            make build64 || true
+            make build64
           fi
 
       - name: Build project on Windows (MSBuild)
