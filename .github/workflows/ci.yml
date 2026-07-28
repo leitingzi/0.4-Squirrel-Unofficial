@@ -7,13 +7,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        arch: [x86, x64]
-    runs-on: ${{ matrix.os }}
+  build-linux-x86:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,42 +16,95 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: Setup build tools (Linux)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Setup build tools
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential g++-multilib libc6-dev-i386 make python3
 
-      - name: Show environment
+      - name: Build Linux x86
         run: |
-          echo "Runner OS: $RUNNER_OS"
-          echo "Matrix OS: ${{ matrix.os }}"
-          echo "Arch: ${{ matrix.arch }}"
+          set -e
+          make -C squirrelsrc sq32 || true
+          make build32 || true
 
-      - name: Build squirrel libs (squirrelsrc) on Linux
-        if: matrix.os == 'ubuntu-latest'
+      - name: Collect libs and commit
+        env:
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
-          if [ "${{ matrix.arch }}" = "x86" ]; then
-            make -C squirrelsrc sq32
-            cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel32.a || true
-            cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib32.a || true
-          else
-            make -C squirrelsrc sq64
-            cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel64.a || true
-            cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib64.a || true
+          set -e
+          OUTDIR="generate/ubuntu-latest-x86"
+          mkdir -p "$OUTDIR"
+          if [ -d build ]; then
+            find build -type f -name '*.so' -print0 | while IFS= read -r -d '' f; do
+              cp "$f" "$OUTDIR/" || true
+            done
           fi
-
-      - name: Build project on Linux
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          if [ "${{ matrix.arch }}" = "x86" ]; then
-            make build32 || true
-          else
-            make build64 || true
+          git config user.name "$GIT_COMMITTER_NAME"
+          git config user.email "$GIT_COMMITTER_EMAIL"
+          git add generate
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
           fi
+          git commit -m "CI: add linux x86 generated libs"
+          git push origin HEAD:${{ github.ref_name }}
 
-      - name: Build project on Windows (MSBuild)
-        if: matrix.os == 'windows-latest'
+  build-linux-x64:
+    needs: build-linux-x86
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Setup build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential make python3
+
+      - name: Build Linux x64
+        run: |
+          set -e
+          make -C squirrelsrc sq64 || true
+          make build64 || true
+
+      - name: Collect libs and commit
+        env:
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+        run: |
+          set -e
+          OUTDIR="generate/ubuntu-latest-x64"
+          mkdir -p "$OUTDIR"
+          if [ -d build ]; then
+            find build -type f -name '*.so' -print0 | while IFS= read -r -d '' f; do
+              cp "$f" "$OUTDIR/" || true
+            done
+          fi
+          git config user.name "$GIT_COMMITTER_NAME"
+          git config user.email "$GIT_COMMITTER_EMAIL"
+          git add generate
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "CI: add linux x64 generated libs"
+          git push origin HEAD:${{ github.ref_name }}
+
+  build-windows-x86:
+    needs: build-linux-x64
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Build Windows x86 (MSBuild)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -65,115 +113,84 @@ jobs:
             Write-Error "vswhere not found at $vswhere"
             exit 1
           }
-          # Robustly parse vswhere output into lines and pick the first non-empty line
-          $rawVswhere = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath) | Out-String
-          $lines = $rawVswhere -split "\r?\n"
+          $raw = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath) | Out-String
+          $lines = $raw -split "\r?\n"
           $installPath = ($lines | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' } | Select-Object -First 1)
-          if (-not $installPath) {
-            Write-Error "No Visual Studio installation with MSBuild found by vswhere"
-            exit 1
-          }
-          # Build MSBuild candidate paths without Join-Path to avoid parameter type issues
+          if (-not $installPath) { Write-Error "No VS found"; exit 1 }
           $msbuildPaths = @(
             "$installPath\MSBuild\Current\Bin\MSBuild.exe",
-            "$installPath\MSBuild\15.0\Bin\MSBuild.exe",
-            "$installPath\MSBuild\14.0\Bin\MSBuild.exe"
+            "$installPath\MSBuild\15.0\Bin\MSBuild.exe"
           )
-          $msbuild = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
-          if (-not $msbuild) {
-            Write-Error "MSBuild.exe not found under $installPath"
-            exit 1
-          }
-          Write-Host "Using MSBuild: $msbuild"
-          if ("${{ matrix.arch }}" -eq "x86") {
-            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
-          } else {
-            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
-          }
+          $ms = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $ms) { Write-Error "MSBuild.exe not found"; exit 1 }
+          & $ms Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
 
-      - name: Collect artifacts into generate/ (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          set -e
-          OUTDIR="generate/${{ matrix.os }}-${{ matrix.arch }}"
-          mkdir -p "$OUTDIR"
-          # 只复制 build 中的 .so（共享库）到 OUTDIR
-          if [ -d build ]; then
-            find build -type f -name '*.so' -print0 | while IFS= read -r -d '' f; do
-              cp "$f" "$OUTDIR/" || true
-            done
-          fi
-          echo "Final generate/ contents:"
-          ls -la "$OUTDIR" || true
-
-      - name: Collect artifacts into generate/ (Windows)
-        if: matrix.os == 'windows-latest'
+      - name: Collect libs and commit
         shell: pwsh
+        env:
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
           $ErrorActionPreference = 'Stop'
-          $out = "generate\${{ matrix.os }}-${{ matrix.arch }}"
+          $out = "generate/windows-latest-x86"
           New-Item -ItemType Directory -Force -Path $out | Out-Null
-          # 只复制 build 中的 .dll 与 .so 到 OUTDIR
           if (Test-Path -Path "build") {
             Get-ChildItem -Path build -Recurse -Include *.dll,*.so -File | ForEach-Object {
               Copy-Item -Path $_.FullName -Destination $out -Force
             }
           }
-          Write-Host "Final generate/ contents:"
-          Get-ChildItem -Path $out | Format-Table -AutoSize
+          git config user.name "$env:GIT_COMMITTER_NAME"
+          git config user.email "$env:GIT_COMMITTER_EMAIL"
+          git add generate
+          if (git diff --cached --quiet) { Write-Host "No changes to commit"; exit 0 }
+          git commit -m "CI: add windows x86 generated libs"
+          git push origin HEAD:${{ github.ref_name }}
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: squirrel-build-${{ matrix.os }}-${{ matrix.arch }}
-          path: generate/
-
-  collect-artifacts:
-    needs: build
-    runs-on: ubuntu-latest
+  build-windows-x64:
+    needs: build-windows-x86
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Download all build artifacts
-        uses: actions/download-artifact@v4
         with:
-          path: downloaded
+          persist-credentials: true
+          fetch-depth: 0
 
-      - name: Show downloaded artifacts
+      - name: Build Windows x64 (MSBuild)
+        shell: pwsh
         run: |
-          echo "Downloaded artifact folders:"
-          ls -la downloaded || true
-      - name: Collect libraries into repository generate/ and commit
+          $ErrorActionPreference = 'Stop'
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          if (-not (Test-Path $vswhere)) { Write-Error "vswhere not found"; exit 1 }
+          $raw = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath) | Out-String
+          $lines = $raw -split "\r?\n"
+          $installPath = ($lines | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' } | Select-Object -First 1)
+          if (-not $installPath) { Write-Error "No VS found"; exit 1 }
+          $msbuildPaths = @(
+            "$installPath\MSBuild\Current\Bin\MSBuild.exe",
+            "$installPath\MSBuild\15.0\Bin\MSBuild.exe"
+          )
+          $ms = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $ms) { Write-Error "MSBuild.exe not found"; exit 1 }
+          & $ms Squirrel04.sln /p:Configuration=Release /p:Platform=x64
+
+      - name: Collect libs and commit
+        shell: pwsh
         env:
           GIT_COMMITTER_NAME: github-actions[bot]
           GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
-          set -e
-          # 目标 generate 目录在仓库根
-          mkdir -p generate
-          # 遍历下载的 artifact 目录，查找 .so/.dll 文件并按 artifact 名称放到 generate/<artifact>/
-          for d in downloaded/*; do
-            if [ -d "$d" ]; then
-              name=$(basename "$d")
-              dest="generate/$name"
-              mkdir -p "$dest"
-              # 复制 .so 和 .dll 文件（包括子目录下的）
-              find "$d" -type f \( -name "*.so" -o -name "*.dll" \) -print0 | while IFS= read -r -d '' f; do
-                cp "$f" "$dest/" || true
-              done
-            fi
-          done
-          echo "Generated files in repo generate/:"
-          ls -R generate || true
-          # 提交并推送到源分支
-          git config user.name "$GIT_COMMITTER_NAME"
-          git config user.email "$GIT_COMMITTER_EMAIL"
+          $ErrorActionPreference = 'Stop'
+          $out = "generate/windows-latest-x64"
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          if (Test-Path -Path "build") {
+            Get-ChildItem -Path build -Recurse -Include *.dll,*.so -File | ForEach-Object {
+              Copy-Item -Path $_.FullName -Destination $out -Force
+            }
+          }
+          git config user.name "$env:GIT_COMMITTER_NAME"
+          git config user.email "$env:GIT_COMMITTER_EMAIL"
           git add generate
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "CI: update generated binaries"
-          # 推送回触发工作流的分支
+          if (git diff --cached --quiet) { Write-Host "No changes to commit"; exit 0 }
+          git commit -m "CI: add windows x64 generated libs"
           git push origin HEAD:${{ github.ref_name }}
