@@ -284,14 +284,14 @@ bool CPlayer::GetAwayStatus() { return functions->IsPlayerAway(this->nPlayerId) 
 bool CPlayer::GetCanUseColors() { return functions->GetPlayerOption(this->nPlayerId, vcmpPlayerOptionChatTagsEnabled) == 1; }
 void CPlayer::SetCanUseColors(bool canUse) { functions->SetPlayerOption(this->nPlayerId, vcmpPlayerOptionChatTagsEnabled, canUse); }
 
-bool CPlayer::GetDrunkStatus() { return functions->GetPlayerOption(this->nPlayerId, vcmpPlayerOptionDrunkEffects) == 1; }
-void CPlayer::SetDrunkStatus(bool isDrunk) { functions->SetPlayerOption(this->nPlayerId, vcmpPlayerOptionDrunkEffects, isDrunk); }
+bool CPlayer::GetDrunkStatus() { return functions->GetPlayerOption(this->nPlayerId, vcmpPlayerOptionDrunkEffectsDeprecated) == 1; }
+void CPlayer::SetDrunkStatus(bool isDrunk) { functions->SetPlayerOption(this->nPlayerId, vcmpPlayerOptionDrunkEffectsDeprecated, isDrunk); }
 void CPlayer::SetDrunkLevel(int visuals, int handling)
 {
 	if (visuals <= 0 && handling <= 0)
-		functions->SetPlayerOption(this->nPlayerId, vcmpPlayerOptionDrunkEffects, 0);
+		functions->SetPlayerOption(this->nPlayerId, vcmpPlayerOptionDrunkEffectsDeprecated, 0);
 	else
-		functions->SetPlayerOption(this->nPlayerId, vcmpPlayerOptionDrunkEffects, 1);
+		functions->SetPlayerOption(this->nPlayerId, vcmpPlayerOptionDrunkEffectsDeprecated, 1);
 }
 
 SQChar * CPlayer::GetUniqueID()
@@ -321,6 +321,15 @@ Sqrat::string PlayerToString(CPlayer * p)
 {
 	return p->GetName();
 }
+
+void CPlayer::SetBleed(bool isBleed) {
+	functions->SetPlayerOption(this->nPlayerId, vcmpPlayerOptionBleeding, isBleed);
+}
+
+bool CPlayer::GetBleed() {
+	return functions->GetPlayerOption(this->nPlayerId, vcmpPlayerOptionBleeding);
+}
+
 
 void RegisterPlayer()
 {
@@ -365,7 +374,8 @@ void RegisterPlayer()
 		.Prop(_SC("WantedLevel"), &CPlayer::GetWantedLevel, &CPlayer::SetWantedLevel)
 		.Prop(_SC("WhiteScanlines"), &CPlayer::GetWhiteScanlines, &CPlayer::SetWhiteScanlines)
 		.Prop(_SC("Widescreen"), &CPlayer::GetWidescreen, &CPlayer::SetWidescreen)
-		.Prop(_SC("World"), &CPlayer::GetWorld, &CPlayer::SetWorld);
+		.Prop(_SC("World"), &CPlayer::GetWorld, &CPlayer::SetWorld)
+		.Prop(_SC("IsBleed"), &CPlayer::GetBleed, &CPlayer::SetBleed);
 
 	// Read-only properties
 	c

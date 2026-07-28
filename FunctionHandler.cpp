@@ -172,6 +172,13 @@ bool EnabledWallglitch()       { return functions->GetServerOption(vcmpServerOpt
 bool EnabledDisableBackfaceCulling() { return functions->GetServerOption(vcmpServerOptionDisableBackfaceCulling) != 0; }
 bool EnabledDisableHeliBladeDamage() { return functions->GetServerOption(vcmpServerOptionDisableHeliBladeDamage) != 0; }
 
+void SetDisableCrouch(bool toggle) {
+	functions->SetServerOption(vcmpServerOptionDisableCrouch, toggle ? 1 : 0);
+}
+bool GetDisableCrouch() {
+	return functions->GetServerOption(vcmpServerOptionDisableCrouch) != 0;
+}
+
 void CreateExplosion( int world, int type, Vector * pos, int playerCaused, bool onGround )
 {
 	functions->CreateExplosion( world, type, pos->x, pos->y, pos->z, playerCaused, onGround );
