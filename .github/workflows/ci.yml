@@ -38,6 +38,16 @@ jobs:
             cp -r build/* generate/ || true
           fi
 
+      - name: Show generate contents (diagnostic)
+        run: |
+          echo "PWD: $(pwd)"
+          echo "List repo root:"
+          ls -la || true
+          echo "List generate/:"
+          ls -la generate || true
+          echo "Find files under generate/:"
+          find generate -maxdepth 3 -type f -print || true
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
