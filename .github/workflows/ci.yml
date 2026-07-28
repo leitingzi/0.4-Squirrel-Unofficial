@@ -87,24 +87,36 @@ jobs:
             & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
           }
 
-      - name: Collect artifacts into generate/
+      - name: Collect artifacts into generate/ (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: |
           set -e
           mkdir -p generate
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            # copy shared objects from objdir
-            if find objdir -type f -name '*.so' | grep -q .; then
-              find objdir -type f -name '*.so' -exec cp --parents {} generate/ \;
-            fi
-            if [ -d build ]; then
-              cp -r build/* generate/ || true
-            fi
-          else
-            # On Windows runner use PowerShell to find DLL/EXE
-            pwsh -Command "Get-ChildItem -Path . -Recurse -Filter '*.dll','*.exe' | ForEach-Object { $dest='generate\'+($_.FullName.Substring((Get-Location).Path.Length).TrimStart('\\')); New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null; Copy-Item $_.FullName $dest }
+          # copy shared objects from objdir
+          if find objdir -type f -name '*.so' | grep -q .; then
+            find objdir -type f -name '*.so' -exec cp --parents {} generate/ \;
+          fi
+          if [ -d build ]; then
+            cp -r build/* generate/ || true
           fi
           echo "Final generate/ contents:"
           ls -la generate || true
+
+      - name: Collect artifacts into generate/ (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force -Path generate | Out-Null
+          $base = (Get-Location).Path
+          Get-ChildItem -Path . -Recurse -File | Where-Object { $_.Extension -in '.dll', '.exe' } | ForEach-Object {
+            $relative = $_.FullName.Substring($base.Length).TrimStart('\')
+            $dest = Join-Path 'generate' $relative
+            New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
+            Copy-Item -Path $_.FullName -Destination $dest
+          }
+          Write-Host "Final generate/ contents:"
+          Get-ChildItem -Path generate -Recurse | Format-Table -AutoSize
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
