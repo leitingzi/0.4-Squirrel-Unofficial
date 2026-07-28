@@ -8,42 +8,74 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        arch: [x86, x64]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install build dependencies
+      - name: Setup build tools (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential g++-multilib libc6-dev-i386 make python3
 
-      - name: Show Makefile
-        run: cat Makefile
-
-      - name: Build squirrel libs (squirrelsrc)
+      - name: Show environment
         run: |
-          # Build only 64-bit libraries on the CI runner to avoid 32-bit toolchain issues
-          make -C squirrelsrc sq64
-          cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel64.a || true
-          cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib64.a || true
+          echo "Runner OS: $RUNNER_OS"
+          echo "Matrix OS: ${{ matrix.os }}"
+          echo "Arch: ${{ matrix.arch }}"
 
-      - name: Build project (Makefile) - 64-bit
-        run: make build64
+      - name: Build squirrel libs (squirrelsrc) on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            make -C squirrelsrc sq32
+            cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel32.a || true
+            cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib32.a || true
+          else
+            make -C squirrelsrc sq64
+            cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel64.a || true
+            cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib64.a || true
+          fi
+
+      - name: Build project on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            make build32 || true
+          else
+            make build64 || true
+          fi
+
+      - name: Build project on Windows (MSBuild)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          if ("${{ matrix.arch }}" -eq "x86") {
+            msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
+          } else {
+            msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
+          }
 
       - name: Collect artifacts into generate/
         run: |
           set -e
           mkdir -p generate
-          echo "Listing objdir for built shared objects:"
-          find objdir -type f -name '*.so' -print || true
-          # Copy any .so from objdir into generate preserving paths
-          if find objdir -type f -name '*.so' | grep -q .; then
-            find objdir -type f -name '*.so' -exec cp --parents {} generate/ \;
-          fi
-          # Also copy legacy build/ outputs if present
-          if [ -d build ]; then
-            cp -r build/* generate/ || true
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            # copy shared objects from objdir
+            if find objdir -type f -name '*.so' | grep -q .; then
+              find objdir -type f -name '*.so' -exec cp --parents {} generate/ \;
+            fi
+            if [ -d build ]; then
+              cp -r build/* generate/ || true
+            fi
+          else
+            # On Windows runner use PowerShell to find DLL/EXE
+            pwsh -Command "Get-ChildItem -Path . -Recurse -Filter '*.dll','*.exe' | ForEach-Object { $dest='generate\'+($_.FullName.Substring((Get-Location).Path.Length).TrimStart('\\')); New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null; Copy-Item $_.FullName $dest }
           fi
           echo "Final generate/ contents:"
           ls -la generate || true
@@ -51,5 +83,5 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: squirrel-build
+          name: squirrel-build-${{ matrix.os }}-${{ matrix.arch }}
           path: generate/
