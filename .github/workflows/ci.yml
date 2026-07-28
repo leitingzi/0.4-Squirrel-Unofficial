@@ -1,5 +1,11 @@
 name: Build Squirrel Plugin
 
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -11,6 +17,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
 
       - name: Setup build tools (Linux)
         if: matrix.os == 'ubuntu-latest'
@@ -167,4 +176,4 @@ jobs:
           fi
           git commit -m "CI: update generated binaries"
           # 推送回触发工作流的分支
-          git push origin HEAD:${{ github.ref }}
+          git push origin HEAD:${{ github.ref_name }}
