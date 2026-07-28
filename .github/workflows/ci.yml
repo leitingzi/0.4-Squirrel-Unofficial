@@ -27,10 +27,7 @@ jobs:
           make -C squirrelsrc sq32 || true
           make build32 || true
 
-      - name: Collect libs and commit
-        env:
-          GIT_COMMITTER_NAME: github-actions[bot]
-          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+      - name: Collect libs
         run: |
           set -e
           OUTDIR="generate/ubuntu-latest-x86"
@@ -40,15 +37,14 @@ jobs:
               cp "$f" "$OUTDIR/" || true
             done
           fi
-          git config user.name "$GIT_COMMITTER_NAME"
-          git config user.email "$GIT_COMMITTER_EMAIL"
-          git add generate
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "CI: add linux x86 generated libs"
-          git push origin HEAD:${{ github.ref_name }}
+          echo "Files in $OUTDIR:"
+          ls -la "$OUTDIR" || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: squirrel-build-ubuntu-latest-x86
+          path: generate/ubuntu-latest-x86
 
   build-linux-x64:
     needs: build-linux-x86
@@ -71,10 +67,7 @@ jobs:
           make -C squirrelsrc sq64 || true
           make build64 || true
 
-      - name: Collect libs and commit
-        env:
-          GIT_COMMITTER_NAME: github-actions[bot]
-          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+      - name: Collect libs
         run: |
           set -e
           OUTDIR="generate/ubuntu-latest-x64"
@@ -84,15 +77,14 @@ jobs:
               cp "$f" "$OUTDIR/" || true
             done
           fi
-          git config user.name "$GIT_COMMITTER_NAME"
-          git config user.email "$GIT_COMMITTER_EMAIL"
-          git add generate
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "CI: add linux x64 generated libs"
-          git push origin HEAD:${{ github.ref_name }}
+          echo "Files in $OUTDIR:"
+          ls -la "$OUTDIR" || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: squirrel-build-ubuntu-latest-x64
+          path: generate/ubuntu-latest-x64
 
   build-windows-x86:
     needs: build-linux-x64
@@ -125,11 +117,8 @@ jobs:
           if (-not $ms) { Write-Error "MSBuild.exe not found"; exit 1 }
           & $ms Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
 
-      - name: Collect libs and commit
+      - name: Collect libs
         shell: pwsh
-        env:
-          GIT_COMMITTER_NAME: github-actions[bot]
-          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
           $ErrorActionPreference = 'Stop'
           $out = "generate/windows-latest-x86"
@@ -139,12 +128,14 @@ jobs:
               Copy-Item -Path $_.FullName -Destination $out -Force
             }
           }
-          git config user.name "$env:GIT_COMMITTER_NAME"
-          git config user.email "$env:GIT_COMMITTER_EMAIL"
-          git add generate
-          if (git diff --cached --quiet) { Write-Host "No changes to commit"; exit 0 }
-          git commit -m "CI: add windows x86 generated libs"
-          git push origin HEAD:${{ github.ref_name }}
+          Write-Host "Files in $out:"
+          Get-ChildItem -Path $out | Format-Table -AutoSize
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: squirrel-build-windows-latest-x86
+          path: generate/windows-latest-x86
 
   build-windows-x64:
     needs: build-windows-x86
@@ -174,11 +165,8 @@ jobs:
           if (-not $ms) { Write-Error "MSBuild.exe not found"; exit 1 }
           & $ms Squirrel04.sln /p:Configuration=Release /p:Platform=x64
 
-      - name: Collect libs and commit
+      - name: Collect libs
         shell: pwsh
-        env:
-          GIT_COMMITTER_NAME: github-actions[bot]
-          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
           $ErrorActionPreference = 'Stop'
           $out = "generate/windows-latest-x64"
@@ -188,9 +176,11 @@ jobs:
               Copy-Item -Path $_.FullName -Destination $out -Force
             }
           }
-          git config user.name "$env:GIT_COMMITTER_NAME"
-          git config user.email "$env:GIT_COMMITTER_EMAIL"
-          git add generate
-          if (git diff --cached --quiet) { Write-Host "No changes to commit"; exit 0 }
-          git commit -m "CI: add windows x64 generated libs"
-          git push origin HEAD:${{ github.ref_name }}
+          Write-Host "Files in $out:"
+          Get-ChildItem -Path $out | Format-Table -AutoSize
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: squirrel-build-windows-latest-x64
+          path: generate/windows-latest-x64
