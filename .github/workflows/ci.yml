@@ -52,6 +52,24 @@ jobs:
             make build64 || true
           fi
 
+      - name: Debug: list build folder (Linux)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          echo "PWD: $(pwd)"
+          echo "--- repo root ---"
+          ls -la || true
+          echo "--- build dir ---"
+          if [ -d build ]; then
+            ls -la build || true
+            find build -type f -maxdepth 4 -print || true
+          else
+            echo "no build dir"
+          fi
+          echo "--- squirrelsrc/lib ---"
+          ls -la squirrelsrc/lib || true
+          echo "--- find so/a files ---"
+          find . -type f \( -iname "*.so" -o -iname "*.a" -o -iname "*.so.*" \) -print || true
+
       - name: Build project on Windows (MSBuild)
         if: ${{ matrix.os == 'windows-latest' }}
         shell: pwsh
@@ -87,6 +105,21 @@ jobs:
           } else {
             & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
           }
+
+      - name: Debug: list build folder (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Continue'
+          Write-Host "Location: $(Get-Location)"
+          Write-Host '--- repo root (top 200 files) ---'
+          Get-ChildItem -Path . -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 200 | ForEach-Object { Write-Host $_.FullName }
+          Write-Host '--- build folder ---'
+          if (Test-Path -Path 'build') { Get-ChildItem -Path .\build -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName } } else { Write-Host 'no build folder' }
+          Write-Host '--- squirrelsrc\lib ---'
+          if (Test-Path -Path 'squirrelsrc\lib') { Get-ChildItem -Path .\squirrelsrc\lib -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName } } else { Write-Host 'no squirrelsrc/lib' }
+          Write-Host '--- find dll/exe ---'
+          Get-ChildItem -Path . -Recurse -File -Include *.dll,*.exe -ErrorAction SilentlyContinue | Select-Object -First 200 | ForEach-Object { Write-Host $_.FullName }
 
       - name: Collect artifacts into generate/ (Linux)
         if: ${{ matrix.os == 'ubuntu-latest' }}
