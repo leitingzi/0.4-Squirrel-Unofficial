@@ -1,11 +1,5 @@
 name: Build Squirrel Plugin
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
 jobs:
   build:
     strategy:
@@ -94,12 +88,14 @@ jobs:
           set -e
           OUTDIR="generate/${{ matrix.os }}-${{ matrix.arch }}"
           mkdir -p "$OUTDIR"
-          # 如果存在 build 目录，则直接复制整个 build 文件夹到 OUTDIR
+          # 只复制 build 中的 .so（共享库）到 OUTDIR
           if [ -d build ]; then
-            cp -r build "$OUTDIR/" || true
+            find build -type f -name '*.so' -print0 | while IFS= read -r -d '' f; do
+              cp "$f" "$OUTDIR/" || true
+            done
           fi
           echo "Final generate/ contents:"
-          ls -la generate || true
+          ls -la "$OUTDIR" || true
 
       - name: Collect artifacts into generate/ (Windows)
         if: matrix.os == 'windows-latest'
@@ -108,12 +104,14 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $out = "generate\${{ matrix.os }}-${{ matrix.arch }}"
           New-Item -ItemType Directory -Force -Path $out | Out-Null
-          # 如果存在 build 文件夹，则复制整个 build 到 OUTDIR
+          # 只复制 build 中的 .dll 与 .so 到 OUTDIR
           if (Test-Path -Path "build") {
-            Copy-Item -Path "build" -Destination $out -Recurse -Force
+            Get-ChildItem -Path build -Recurse -Include *.dll,*.so -File | ForEach-Object {
+              Copy-Item -Path $_.FullName -Destination $out -Force
+            }
           }
           Write-Host "Final generate/ contents:"
-          Get-ChildItem -Path generate -Recurse | Format-Table -AutoSize
+          Get-ChildItem -Path $out | Format-Table -AutoSize
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -137,36 +135,36 @@ jobs:
         run: |
           echo "Downloaded artifact folders:"
           ls -la downloaded || true
-
-      - name: Repackage all artifacts into single archive
+      - name: Collect libraries into repository generate/ and commit
+        env:
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
           set -e
-          mkdir -p collected
-          echo "Scanning downloaded artifacts for build folders"
+          # 目标 generate 目录在仓库根
+          mkdir -p generate
+          # 遍历下载的 artifact 目录，查找 .so/.dll 文件并按 artifact 名称放到 generate/<artifact>/
           for d in downloaded/*; do
             if [ -d "$d" ]; then
               name=$(basename "$d")
-              echo "Processing artifact: $name"
-              mkdir -p "collected/$name"
-              # 如果 artifact 内有 build 目录则直接复制
-              if [ -d "$d/build" ]; then
-                cp -r "$d/build" "collected/$name/" || true
-              else
-                # 否则查找任意名为 build 的子目录并复制
-                find "$d" -type d -name build -print0 | while IFS= read -r -d '' b; do
-                  cp -r "$b" "collected/$name/" || true
-                done
-              fi
+              dest="generate/$name"
+              mkdir -p "$dest"
+              # 复制 .so 和 .dll 文件（包括子目录下的）
+              find "$d" -type f \( -name "*.so" -o -name "*.dll" \) -print0 | while IFS= read -r -d '' f; do
+                cp "$f" "$dest/" || true
+              done
             fi
           done
-          echo "Collected build folders:" 
-          find collected -type d -maxdepth 4 -print || true
-          ARCHIVE_NAME="squirrel-all-artifacts-${{ github.run_number }}.tar.gz"
-          tar -czf "$ARCHIVE_NAME" -C collected .
-          echo "Created $ARCHIVE_NAME"
-
-      - name: Upload combined artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: squirrel-all-artifacts
-          path: squirrel-all-artifacts-${{ github.run_number }}.tar.gz
+          echo "Generated files in repo generate/:"
+          ls -R generate || true
+          # 提交并推送到源分支
+          git config user.name "$GIT_COMMITTER_NAME"
+          git config user.email "$GIT_COMMITTER_EMAIL"
+          git add generate
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "CI: update generated binaries"
+          # 推送回触发工作流的分支
+          git push origin HEAD:${{ github.ref }}
