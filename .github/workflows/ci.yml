@@ -94,12 +94,10 @@ jobs:
           set -e
           OUTDIR="generate/${{ matrix.os }}-${{ matrix.arch }}"
           mkdir -p "$OUTDIR"
-          # Find all .so files excluding obj and git and generate dirs, copy only the basenames
-          find . -type f -name '*.so' \
-            -not -path './obj/*' -not -path '*/obj/*' -not -path './.git/*' -not -path './generate/*' \
-            -print0 | while IFS= read -r -d '' f; do
-            cp --parents "$f" "$OUTDIR/" || cp "$f" "$OUTDIR/" || true
-          done
+          # 如果存在 build 目录，则直接复制整个 build 文件夹到 OUTDIR
+          if [ -d build ]; then
+            cp -r build "$OUTDIR/" || true
+          fi
           echo "Final generate/ contents:"
           ls -la generate || true
 
@@ -110,12 +108,9 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $out = "generate\${{ matrix.os }}-${{ matrix.arch }}"
           New-Item -ItemType Directory -Force -Path $out | Out-Null
-          # Find all dll files excluding obj, .git and generate directories
-          Get-ChildItem -Path . -Recurse -File -Filter *.dll | Where-Object {
-            $_.FullName -notmatch '\\obj\\' -and $_.FullName -notmatch '\.git\\' -and $_.FullName -notmatch '\\generate\\'
-          } | ForEach-Object {
-            $dest = Join-Path $out $_.Name
-            Copy-Item -Path $_.FullName -Destination $dest -Force
+          # 如果存在 build 文件夹，则复制整个 build 到 OUTDIR
+          if (Test-Path -Path "build") {
+            Copy-Item -Path "build" -Destination $out -Recurse -Force
           }
           Write-Host "Final generate/ contents:"
           Get-ChildItem -Path generate -Recurse | Format-Table -AutoSize
@@ -147,21 +142,25 @@ jobs:
         run: |
           set -e
           mkdir -p collected
-          echo "Scanning downloaded artifacts for .so and .dll files"
+          echo "Scanning downloaded artifacts for build folders"
           for d in downloaded/*; do
             if [ -d "$d" ]; then
               name=$(basename "$d")
               echo "Processing artifact: $name"
               mkdir -p "collected/$name"
-              # Find so/dll inside this artifact and copy into collected/<artifact>/ preserving filenames
-              find "$d" -type f \( -iname '*.so' -o -iname '*.dll' \) -print0 | while IFS= read -r -d '' f; do
-                echo "  found: $f"
-                cp --parents "$f" "collected/$name/" 2>/dev/null || cp "$f" "collected/$name/" || true
-              done
+              # 如果 artifact 内有 build 目录则直接复制
+              if [ -d "$d/build" ]; then
+                cp -r "$d/build" "collected/$name/" || true
+              else
+                # 否则查找任意名为 build 的子目录并复制
+                find "$d" -type d -name build -print0 | while IFS= read -r -d '' b; do
+                  cp -r "$b" "collected/$name/" || true
+                done
+              fi
             fi
           done
-          echo "Collected contents:" 
-          find collected -type f -maxdepth 3 -print || true
+          echo "Collected build folders:" 
+          find collected -type d -maxdepth 4 -print || true
           ARCHIVE_NAME="squirrel-all-artifacts-${{ github.run_number }}.tar.gz"
           tar -czf "$ARCHIVE_NAME" -C collected .
           echo "Created $ARCHIVE_NAME"
