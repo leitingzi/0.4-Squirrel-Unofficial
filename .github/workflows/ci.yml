@@ -69,10 +69,11 @@ jobs:
             Write-Error "No Visual Studio installation with MSBuild found by vswhere"
             exit 1
           }
+          # Build MSBuild candidate paths without Join-Path to avoid parameter type issues
           $msbuildPaths = @(
-            Join-Path $installPath "MSBuild\Current\Bin\MSBuild.exe",
-            Join-Path $installPath "MSBuild\15.0\Bin\MSBuild.exe",
-            Join-Path $installPath "MSBuild\14.0\Bin\MSBuild.exe"
+            "$installPath\MSBuild\Current\Bin\MSBuild.exe",
+            "$installPath\MSBuild\15.0\Bin\MSBuild.exe",
+            "$installPath\MSBuild\14.0\Bin\MSBuild.exe"
           )
           $msbuild = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
           if (-not $msbuild) {
