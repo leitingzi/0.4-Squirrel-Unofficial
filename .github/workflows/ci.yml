@@ -79,10 +79,12 @@ jobs:
             exit 1
           }
           Write-Host "Using MSBuild: $msbuild"
+          # Override Windows SDK version to one available on hosted runner
+          $winSdk = '10.0.22621.0'
           if ("${{ matrix.arch }}" -eq "x86") {
-            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=Win32
+            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=Win32 /p:WindowsTargetPlatformVersion=$winSdk /p:PlatformToolset=v143
           } else {
-            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
+            & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64 /p:WindowsTargetPlatformVersion=$winSdk /p:PlatformToolset=v143
           }
 
       - name: Collect artifacts into generate/
