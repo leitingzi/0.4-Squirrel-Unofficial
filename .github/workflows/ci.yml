@@ -21,6 +21,15 @@ jobs:
       - name: Show Makefile
         run: cat Makefile
 
+      - name: Build squirrel libs (squirrelsrc)
+        run: |
+          make -C squirrelsrc sq32
+          cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel32.a || true
+          cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib32.a || true
+          make -C squirrelsrc sq64
+          cp squirrelsrc/lib/libsquirrel.a squirrelsrc/lib/libsquirrel64.a || true
+          cp squirrelsrc/lib/libsqstdlib.a squirrelsrc/lib/libsqstdlib64.a || true
+
       - name: Build project (Makefile)
         run: make build
 
