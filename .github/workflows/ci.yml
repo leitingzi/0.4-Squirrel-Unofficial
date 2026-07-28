@@ -1,7 +1,10 @@
 name: Build Squirrel Plugin
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -15,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup build tools (Linux)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential g++-multilib libc6-dev-i386 make python3
@@ -27,7 +30,7 @@ jobs:
           echo "Arch: ${{ matrix.arch }}"
 
       - name: Build squirrel libs (squirrelsrc) on Linux
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: matrix.os == 'ubuntu-latest'
         run: |
           if [ "${{ matrix.arch }}" = "x86" ]; then
             make -C squirrelsrc sq32
@@ -40,7 +43,7 @@ jobs:
           fi
 
       - name: Build project on Linux
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: matrix.os == 'ubuntu-latest'
         run: |
           if [ "${{ matrix.arch }}" = "x86" ]; then
             make build32 || true
@@ -48,26 +51,8 @@ jobs:
             make build64 || true
           fi
 
-      - name: Debug: list build folder (Linux)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: |
-          echo "PWD: $(pwd)"
-          echo "--- repo root ---"
-          ls -la || true
-          echo "--- build dir ---"
-          if [ -d build ]; then
-            ls -la build || true
-            find build -type f -maxdepth 4 -print || true
-          else
-            echo "no build dir"
-          fi
-          echo "--- squirrelsrc/lib ---"
-          ls -la squirrelsrc/lib || true
-          echo "--- find so/a files ---"
-          find . -type f \( -iname "*.so" -o -iname "*.a" -o -iname "*.so.*" \) -print || true
-
       - name: Build project on Windows (MSBuild)
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -76,19 +61,15 @@ jobs:
             Write-Error "vswhere not found at $vswhere"
             exit 1
           }
-          # Robustly parse vswhere output into lines and pick the first non-empty line
-          $rawVswhere = (& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath) | Out-String
-          $lines = $rawVswhere -split "\r?\n"
-          $installPath = ($lines | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' } | Select-Object -First 1)
+          $installPath = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
           if (-not $installPath) {
             Write-Error "No Visual Studio installation with MSBuild found by vswhere"
             exit 1
           }
-          # Build MSBuild candidate paths without Join-Path to avoid parameter type issues
           $msbuildPaths = @(
-            "$installPath\MSBuild\Current\Bin\MSBuild.exe",
-            "$installPath\MSBuild\15.0\Bin\MSBuild.exe",
-            "$installPath\MSBuild\14.0\Bin\MSBuild.exe"
+            Join-Path $installPath "MSBuild\Current\Bin\MSBuild.exe",
+            Join-Path $installPath "MSBuild\15.0\Bin\MSBuild.exe",
+            Join-Path $installPath "MSBuild\14.0\Bin\MSBuild.exe"
           )
           $msbuild = $msbuildPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
           if (-not $msbuild) {
@@ -102,46 +83,24 @@ jobs:
             & $msbuild Squirrel04.sln /p:Configuration=Release /p:Platform=x64
           }
 
-      - name: Debug: list build folder (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Continue'
-          Write-Host "Location: $(Get-Location)"
-          Write-Host '--- repo root (top 200 files) ---'
-          Get-ChildItem -Path . -Recurse -File -ErrorAction SilentlyContinue | Select-Object -First 200 | ForEach-Object { Write-Host $_.FullName }
-          Write-Host '--- build folder ---'
-          if (Test-Path -Path 'build') { Get-ChildItem -Path .\build -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName } } else { Write-Host 'no build folder' }
-          Write-Host '--- squirrelsrc\lib ---'
-          if (Test-Path -Path 'squirrelsrc\lib') { Get-ChildItem -Path .\squirrelsrc\lib -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_.FullName } } else { Write-Host 'no squirrelsrc/lib' }
-          Write-Host '--- find dll/exe ---'
-          Get-ChildItem -Path . -Recurse -File -Include *.dll,*.exe -ErrorAction SilentlyContinue | Select-Object -First 200 | ForEach-Object { Write-Host $_.FullName }
-
-      - name: Collect artifacts into generate/ (Linux)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Collect artifacts into generate/
         run: |
           set -e
-          OUTDIR="generate/${{ matrix.os }}-${{ matrix.arch }}"
-          mkdir -p "$OUTDIR"
-          # copy entire build dir if present
-          if [ -d build ]; then
-            cp -r build "$OUTDIR/" || true
+          mkdir -p generate
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            # copy shared objects from objdir
+            if find objdir -type f -name '*.so' | grep -q .; then
+              find objdir -type f -name '*.so' -exec cp --parents {} generate/ \;
+            fi
+            if [ -d build ]; then
+              cp -r build/* generate/ || true
+            fi
+          else
+            # On Windows runner use PowerShell to find DLL/EXE
+            pwsh -Command "Get-ChildItem -Path . -Recurse -Filter '*.dll','*.exe' | ForEach-Object { $dest='generate\'+($_.FullName.Substring((Get-Location).Path.Length).TrimStart('\\')); New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null; Copy-Item $_.FullName $dest }
           fi
           echo "Final generate/ contents:"
           ls -la generate || true
-
-      - name: Collect artifacts into generate/ (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $out = "generate\${{ matrix.os }}-${{ matrix.arch }}"
-          New-Item -ItemType Directory -Force -Path $out | Out-Null
-          if (Test-Path -Path "build") {
-            Copy-Item -Path "build" -Destination $out -Recurse -Force
-          }
-          Write-Host "Final generate/ contents:"
-          Get-ChildItem -Path generate -Recurse | Format-Table -AutoSize
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
