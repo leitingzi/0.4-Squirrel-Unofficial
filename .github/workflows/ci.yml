@@ -92,13 +92,10 @@ jobs:
         run: |
           set -e
           mkdir -p generate
-          # copy shared objects from objdir
-          if find objdir -type f -name '*.so' | grep -q .; then
-            find objdir -type f -name '*.so' -exec cp --parents {} generate/ \;
-          fi
-          if [ -d build ]; then
-            cp -r build/* generate/ || true
-          fi
+          # clean previous artifacts
+          rm -f generate/* || true
+          # copy only .so and .dll files (flattened into generate/)
+          find . -type f \( -name '*.so' -o -name '*.dll' \) -exec cp {} generate/ \;
           echo "Final generate/ contents:"
           ls -la generate || true
 
@@ -108,15 +105,15 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           New-Item -ItemType Directory -Force -Path generate | Out-Null
-          # Use -Include with -File to match multiple extensions (Filter accepts only a single string)
-          Get-ChildItem -Path . -Recurse -File -Include '*.dll','*.exe' | ForEach-Object {
-            $relative = $_.FullName.Substring((Get-Location).Path.Length).TrimStart('\\')
-            $dest = Join-Path -Path 'generate' -ChildPath $relative
-            New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
-            Copy-Item -Path $_.FullName -Destination $dest
+          # remove previous artifacts
+          Get-ChildItem -Path generate -File -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+          # copy only .dll and .so files, flattened into generate/ (file name only)
+          Get-ChildItem -Path . -Recurse -File -Include '*.dll','*.so' | ForEach-Object {
+            $dest = Join-Path -Path (Get-Item -Path 'generate').FullName -ChildPath $_.Name
+            Copy-Item -Path $_.FullName -Destination $dest -Force
           }
           Write-Host "Final generate/ contents:"
-          Get-ChildItem -Path generate -Recurse -Force | Format-List
+          Get-ChildItem -Path generate -File | Format-Table Name, Length
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
