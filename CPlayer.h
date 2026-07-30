@@ -43,6 +43,10 @@ class CPlayer
 		void SetWantedLevel(int wantedLevel);
 		void SetCrouchDisabled(bool canCrouch);
 		void SetBleed(bool isBleed);
+		void SetDrunkHandling(int drunkLevel);
+		void SetDrunkVisuals(int drunkLevel);
+		void Set3DArrowForPlayer(CPlayer* player, bool enabled);
+		void InterpolateCameraLookAt(Vector pos, int interpTime);
 
 	public:
 		EntityVector GetPosition();
@@ -102,6 +106,9 @@ class CPlayer
 		int GetWantedLevel(void);
 		bool GetCrouchDisabled(void);
 		bool GetBleed();
+		int GetDrunkHandling();
+		int GetDrunkVisuals();
+		bool Get3DArrowForPlayer(CPlayer* player);
 
 	public:
 		void PlaySound(int sound);
@@ -136,6 +143,7 @@ class CPlayer
 		void SetDrunkLevel(int visuals, int handling);
 		bool RedirectPlayerToServer(const char* szIP, unsigned int usPort, const char* szNickname, const char* szServerPass, const char* szUserPass);
 		void RequestModuleList(void);
+		void Kill(void);
 
 	public:
 		int nPlayerId;

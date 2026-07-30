@@ -38,6 +38,8 @@ class CVehicle
 		void SetEngineDisabled(bool engineDisabled);
 		void SetBootOpen(bool bootOpen);
 		void SetBonnetOpen(bool bonnetOpen);
+		void SetLightsData(int lightsData);
+		void Set3DArrowForPlayer(CPlayer* player, bool enabled);
 
 	public:
 		int GetWorld();
@@ -77,6 +79,8 @@ class CVehicle
 		bool GetEngineDisabled();
 		bool GetBootOpen();
 		bool GetBonnetOpen();
+		int GetLightsData();
+		bool Get3DArrowForPlayer(CPlayer* player);
 
 	public:
 		void Delete();

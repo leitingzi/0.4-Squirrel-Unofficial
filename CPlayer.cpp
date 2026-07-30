@@ -330,6 +330,37 @@ bool CPlayer::GetBleed() {
 	return functions->GetPlayerOption(this->nPlayerId, vcmpPlayerOptionBleeding);
 }
 
+void CPlayer::Kill() {
+	functions->KillPlayer(this->nPlayerId);
+}
+
+void CPlayer::SetDrunkHandling(int drunkLevel) {
+	functions->SetPlayerDrunkHandling(this->nPlayerId, drunkLevel);
+}
+
+int CPlayer::GetDrunkHandling() {
+	return functions->GetPlayerDrunkHandling(this->nPlayerId);
+}
+
+void CPlayer::SetDrunkVisuals(int drunkLevel) {
+	functions->SetPlayerDrunkVisuals(this->nPlayerId, drunkLevel);
+}
+
+int CPlayer::GetDrunkVisuals() {
+	return functions->GetPlayerDrunkVisuals(this->nPlayerId);
+}
+
+void CPlayer::Set3DArrowForPlayer(CPlayer* player, bool enabled) {
+	functions->SetPlayer3DArrowForPlayer(this->nPlayerId, player->nPlayerId, enabled);
+}
+bool CPlayer::Get3DArrowForPlayer(CPlayer* player) {
+	return functions->GetPlayer3DArrowForPlayer(this->nPlayerId, player->nPlayerId) == 1;
+}
+
+void CPlayer::InterpolateCameraLookAt(Vector pos, int interpTime) {
+	functions->InterpolateCameraLookAt(this->nPlayerId, pos.x, pos.y, pos.z, interpTime);
+}
+
 
 void RegisterPlayer()
 {
@@ -375,7 +406,9 @@ void RegisterPlayer()
 		.Prop(_SC("WhiteScanlines"), &CPlayer::GetWhiteScanlines, &CPlayer::SetWhiteScanlines)
 		.Prop(_SC("Widescreen"), &CPlayer::GetWidescreen, &CPlayer::SetWidescreen)
 		.Prop(_SC("World"), &CPlayer::GetWorld, &CPlayer::SetWorld)
-		.Prop(_SC("IsBleed"), &CPlayer::GetBleed, &CPlayer::SetBleed);
+		.Prop(_SC("IsBleed"), &CPlayer::GetBleed, &CPlayer::SetBleed)
+		.Prop(_SC("DrunkHandling"), &CPlayer::GetDrunkHandling, &CPlayer::SetDrunkHandling)
+		.Prop(_SC("DrunkVisuals"), &CPlayer::GetDrunkVisuals, &CPlayer::SetDrunkVisuals);
 
 	// Read-only properties
 	c
@@ -438,7 +471,11 @@ void RegisterPlayer()
 		.Func(_SC("Spawn"), &CPlayer::Spawn )
 		.Func(_SC("StreamedToPlayer"), &CPlayer::StreamedToPlayer )
 		.Func(_SC("PutInVehicleSlot"), &CPlayer::SetVehicleSlot )
-		.Func(_SC("RequestModuleList"), &CPlayer::RequestModuleList);
+		.Func(_SC("RequestModuleList"), &CPlayer::RequestModuleList)
+		.Func(_SC("Kill"), &CPlayer::Kill)
+		.Func(_SC("Set3DArrowForPlayer"), &CPlayer::Set3DArrowForPlayer)
+		.Func(_SC("Get3DArrowForPlayer"), &CPlayer::Get3DArrowForPlayer)
+		.Func(_SC("InterpolateCameraLookAt"), &CPlayer::InterpolateCameraLookAt);
 
 	c.GlobalFunc(_SC("_tostring"), &PlayerToString);
 	RootTable(v).Bind( _SC("CPlayer"), c );
