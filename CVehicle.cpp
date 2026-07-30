@@ -309,6 +309,41 @@ void CVehicle::SetRadioLocked(const bool isLocked) { functions->SetVehicleOption
 bool CVehicle::GetGhost() { return functions->GetVehicleOption(this->nVehicleId, vcmpVehicleOptionGhost) == 1; }
 void CVehicle::SetGhost(const bool isGhost) { functions->SetVehicleOption(this->nVehicleId, vcmpVehicleOptionGhost, isGhost); }
 
+void CVehicle::SetEngineDisabled(bool engineDisabled) {
+	functions->SetVehicleOption(this->nVehicleId, vcmpVehicleOptionEngineDisabled, engineDisabled);
+}
+bool CVehicle::GetEngineDisabled() {
+	return functions->GetVehicleOption(this->nVehicleId, vcmpVehicleOptionEngineDisabled) == 1;
+}
+
+void CVehicle::SetBootOpen(bool bootOpen) {
+	functions->SetVehicleOption(this->nVehicleId, vcmpVehicleOptionBootOpen, bootOpen);
+}
+bool CVehicle::GetBootOpen() {
+	return functions->GetVehicleOption(this->nVehicleId, vcmpVehicleOptionBootOpen) == 1;
+}
+
+void CVehicle::SetBonnetOpen(bool bonnetOpen) {
+	functions->SetVehicleOption(this->nVehicleId, vcmpVehicleOptionBonnetOpen, bonnetOpen);
+}
+bool CVehicle::GetBonnetOpen() {
+	return functions->GetVehicleOption(this->nVehicleId, vcmpVehicleOptionBonnetOpen) == 1;
+}
+
+void CVehicle::SetLightsData(int lightsData) {
+	functions->SetVehicleLightsData(this->nVehicleId, lightsData);
+}
+int CVehicle::GetLightsData() {
+	return functions->GetVehicleLightsData(this->nVehicleId);
+}
+
+void CVehicle::Set3DArrowForPlayer(CPlayer* player, bool enabled) {
+	functions->SetVehicle3DArrowForPlayer(this->nVehicleId, player->nPlayerId, enabled);
+}
+bool CVehicle::Get3DArrowForPlayer(CPlayer* player) {
+	return functions->GetVehicle3DArrowForPlayer(this->nVehicleId, player->nPlayerId) == 1;
+}
+
 void RegisterVehicle()
 {
 	Class <CVehicle> c(v, "CVehicle_INTERNAL");
@@ -343,7 +378,11 @@ void RegisterVehicle()
 		.Prop( _SC("Radio"), &CVehicle::GetRadio, &CVehicle::SetRadio )
 		.Prop( _SC("RadioLocked"), &CVehicle::GetRadioLockStatus, &CVehicle::SetRadioLocked )
 		.Prop( _SC("IsGhost"), &CVehicle::GetGhost, &CVehicle::SetGhost )
-		.Prop( _SC("SingleUse"), &CVehicle::GetSingleUse, &CVehicle::SetSingleUse );
+		.Prop( _SC("SingleUse"), &CVehicle::GetSingleUse, &CVehicle::SetSingleUse )
+		.Prop( _SC("EngineDisabled"), &CVehicle::GetEngineDisabled, &CVehicle::SetEngineDisabled)
+		.Prop( _SC("BootOpen"), &CVehicle::GetBootOpen, &CVehicle::SetBootOpen)
+		.Prop( _SC("BonnetOpen"), &CVehicle::GetBonnetOpen, &CVehicle::SetBonnetOpen)
+		.Prop( _SC("LightsData"), &CVehicle::GetLightsData, &CVehicle::SetLightsData);
 
 	// Read-only properties
 	c
@@ -380,7 +419,9 @@ void RegisterVehicle()
 		.Func( _SC("AddSpeed"), &CVehicle::AddVehicleSpeed, 2, "xx" )
 		.Func( _SC("AddRelSpeed"), &CVehicle::AddVehicleRelSpeed, 2, "xx" )
 		.Func( _SC("AddTurnSpeed"), &CVehicle::AddVehicleTurnSpeed, 2, "xx" )
-		.Func( _SC("AddRelTurnSpeed"), &CVehicle::AddVehicleRelTurnSpeed, 2, "xx" );
+		.Func( _SC("AddRelTurnSpeed"), &CVehicle::AddVehicleRelTurnSpeed, 2, "xx" )
+		.Func( _SC("Set3DArrowForPlayer"), &CVehicle::Set3DArrowForPlayer, 3, "xxb" )
+		.Func( _SC("Get3DArrowForPlayer"), &CVehicle::Set3DArrowForPlayer, 2, "xx" );
 
 	RootTable(v).Bind( _SC("CVehicle"), c );
 }

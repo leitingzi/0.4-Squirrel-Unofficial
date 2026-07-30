@@ -255,6 +255,7 @@
     <ClCompile Include="sqstdsystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Downloads\VCMP.h" />
     <ClInclude Include="sqstdblobimpl.h" />
     <ClInclude Include="sqstdstream.h" />
   </ItemGroup>

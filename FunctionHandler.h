@@ -100,6 +100,9 @@ bool EnabledWallglitch       ( void );
 bool EnabledDisableBackfaceCulling ( void );
 bool EnabledDisableHeliBladeDamage ( void );
 
+void SetDisableCrouch(bool toggle);
+bool GetDisableCrouch();
+
 int CreateBlip( int world, Vector * pos, int scale, RGBa color, int nSpriteId );
 void DestroyBlip( int blipID );
 

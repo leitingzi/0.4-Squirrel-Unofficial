@@ -88,6 +88,9 @@ void RegisterGlobals()
 		.Func(_SC("GetBackfaceCullingDisabled"), EnabledDisableBackfaceCulling, 1, _SC("t"))
 		.Func(_SC("GetHeliBladeDamageDisabled"), EnabledDisableHeliBladeDamage, 1, _SC("t"))
 
+		.Func(_SC("SetDisableCrouch"), SetDisableCrouch, 2, _SC("tb"))
+		.Func(_SC("GetDisableCrouch"), GetDisableCrouch, 1, _SC("t"))
+
 		.Overload(_SC("CreateRadioStream"), CreateRadioStreamWithID)
 		.Overload(_SC("CreateRadioStream"), CreateRadioStream)
 		.Func(_SC("DestroyRadioStream"), DestroyRadioStream, 2, _SC("ti"))

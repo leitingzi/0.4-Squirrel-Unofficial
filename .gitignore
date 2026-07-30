@@ -19,3 +19,5 @@ builds/
 *.lib
 
 .vs
+Win32
+x64
