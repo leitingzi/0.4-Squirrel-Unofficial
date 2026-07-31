@@ -93,6 +93,11 @@ void OnFrame( float fElapsedTime )
 	// Process any timers we have
 	pCore->ProcessTimers(fElapsedTime);
 
+	Function callback = RootTable().GetFunction(_SC("onScriptProcess"));
+	if (!callback.IsNull())
+		callback();
+	callback.Release();
+
 	int lastHour            = lastSrvInfo.lastHour;
 	int lastMinute          = lastSrvInfo.lastMinute;
 
@@ -893,30 +898,85 @@ void OnEntityPoolChange (vcmpEntityPool nEntityType, int nEntityId, uint8_t bDel
 	{
 		if (nEntityType == vcmpEntityPoolVehicle)
 		{
-			if (!bDeleted)
-				pCore->AllocateVehicle(nEntityId, false);
+			if (!bDeleted) {
+				CVehicle* veh = pCore->AllocateVehicle(nEntityId, false);
+
+				Function callback = RootTable().GetFunction(_SC("onVehicleCreated"));
+				if (!callback.IsNull())
+					callback(veh);
+				callback.Release();
+			}
 			else
+			{
 				pCore->DereferenceVehicle(nEntityId);
+
+				Function callBack = RootTable().GetFunction(_SC("onVehicleDestroy"));
+				if (!callBack.IsNull())
+					callBack(nEntityId);
+				callBack.Release();
+			}
 		}
 		else if (nEntityType == vcmpEntityPoolObject)
 		{
 			if (!bDeleted)
-				pCore->AllocateObject(nEntityId, false);
+			{
+				CObject* obj = pCore->AllocateObject(nEntityId, false);
+
+				Function callback = RootTable().GetFunction(_SC("onObjectCreated"));
+				if (!callback.IsNull())
+					callback(obj);
+				callback.Release();
+			}
 			else
+			{
 				pCore->DereferenceObject(nEntityId);
+
+				Function callBack = RootTable().GetFunction(_SC("onObjectDestroy"));
+				if (!callBack.IsNull())
+					callBack(nEntityId);
+				callBack.Release();
+			}
 		}
 		else if (nEntityType == vcmpEntityPoolPickup)
 		{
 			if (!bDeleted)
-				pCore->AllocatePickup(nEntityId, false);
+			{
+				CPickup* pickup = pCore->AllocatePickup(nEntityId, false);
+
+				Function callback = RootTable().GetFunction(_SC("onPickupCreated"));
+				if (!callback.IsNull())
+					callback(pickup);
+				callback.Release();
+			}
 			else
+			{
 				pCore->DereferencePickup(nEntityId);
+
+				Function callBack = RootTable().GetFunction(_SC("onPickupDestroy"));
+				if (!callBack.IsNull())
+					callBack(nEntityId);
+				callBack.Release();
+			}
 		}
 		else if (nEntityType == vcmpEntityPoolCheckPoint) {
 			if (!bDeleted)
-				pCore->AllocateCheckpoint(nEntityId, false);
+			{
+				CCheckpoint* checkpoint = pCore->AllocateCheckpoint(nEntityId, false);
+
+				Function callback = RootTable().GetFunction(_SC("onCheckpointCreated"));
+				if (!callback.IsNull())
+					callback(checkpoint);
+				callback.Release();
+			}
 			else
+			{
 				pCore->DereferenceCheckpoint(nEntityId);
+
+				Function callBack = RootTable().GetFunction(_SC("onCheckpointDestroy"));
+				if (!callBack.IsNull())
+					callBack(nEntityId);
+				callBack.Release();
+			}
 		}
 	}
 }
